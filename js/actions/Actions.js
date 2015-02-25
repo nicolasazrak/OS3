@@ -1,5 +1,5 @@
 var Reflux = require('reflux');
 
-var Actions = Reflux.createActions(["confirm_tasks"]);
+var Actions = Reflux.createActions( ["confirmTasks", "addTask", "updateTask", "deleteTask"] );
 
-module.exports = Action;
+module.exports = Actions;

@@ -1,20 +1,21 @@
 var React 			= require('react');
-var TasksStore 		= require('../../stores/TasksStore');
-var ResultsStore 	= require('../../stores/ResultsStore');
+var Actions			= require('../../actions/Actions');
 
 var InputButtons = React.createClass({
 
 	onNewTask: function () {
-		TasksStore.newTask();
+		Actions.addTask();
 	},
 
 	onGenerate: function () {
-		ResultsStore.generate();
+		Actions.confirmTasks();
 	},
 
 	render: function(){
 		return (
+
 			<div className="row">
+
 				<div className="large-4 columns">
 					<a onClick={this.onNewTask} className="button postfix">Agregar Programa</a>
 				</div>
@@ -31,6 +32,7 @@ var InputButtons = React.createClass({
 				</div>
 
 			</div>
+
 		);
 	}
 

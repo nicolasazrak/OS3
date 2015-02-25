@@ -1,12 +1,12 @@
 var Reflux = require('reflux');
-
+var Actions = require('../actions/Actions')
 
 var __results = [];
 
 var ResultsStore = Reflux.createStore({
 
 	init: function(){
-		
+		Actions.confirmTasks.listen(this.generate);
 	},
 
 	generate: function(){

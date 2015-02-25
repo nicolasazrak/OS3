@@ -7,11 +7,7 @@ var ResultsStore 	= require('../../stores/ResultsStore');
 var ResultTable = React.createClass({
 
 	getResults: function(){
-		var results = [];
-		this.state.results.map(function(result){
-			results.push( <ResultRow key={result.id} data={result} /> );
-		});
-		return results;
+		return this.state.results.map( result => { return <ResultRow key={result.id} data={result} /> } );
 	},
 
 	getInitialState: function(){

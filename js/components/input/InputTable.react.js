@@ -15,7 +15,7 @@ var InputTable = React.createClass({
 
 	componentDidMount: function(){
 		var self = this;
-		this.unsubscribe = TasksStore.listen(function(){
+		this.unsubscribe = TasksStore.listen( () => {
 			self.setState( { tasks: TasksStore.getTasks() } );
 		});
 	},
@@ -25,13 +25,7 @@ var InputTable = React.createClass({
 	},
 
 	getInputTasks: function () {
-		var inputTasks = [];
-
-		this.state.tasks.map(function(task){
-			inputTasks.push( <InputRow key={task.id} data={task} /> );
-		});
-
-		return inputTasks;
+		return this.state.tasks.map( task => { return  <InputRow key={task.id} data={task} /> ; } );
 	},
 
 	render: function(){
