@@ -1,11 +1,8 @@
 var React = require('react');
 
-var ResultTable = require('./components/results/ResultTable.react');
-var InputTable = require('./components/input/InputTable.react');
+var App = require('./components/App.react');
 
-
-React.render(<ResultTable />, document.getElementById("results"));
-React.render(<InputTable />, document.getElementById("input"));
+React.render(<App />, document.body);
 
 
 

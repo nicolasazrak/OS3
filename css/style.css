@@ -1,0 +1,23 @@
+.table-results {
+	width: 100%
+}
+
+
+.table-results tbody td {
+	height: 45px;
+	min-width: 35px;
+}
+
+.table-results tbody tr td:first-child {
+	width: 150px;
+}
+
+
+.cpu {
+	background: #DB4B6A
+}
+
+
+.io {
+	background: #653BFF
+}
