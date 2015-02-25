@@ -12,6 +12,7 @@ var InputHead = React.createClass({
 				<th>I/O</th>
 				<th>CPU</th>
 				<th>I/O</th>
+				<th></th>
 			</tr>
 		);
 	}
