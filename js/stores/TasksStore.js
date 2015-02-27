@@ -5,7 +5,6 @@ var Actions		= require('../actions/Actions');
 var __tasks = [
 
 	{ id: 0, description: 'Programa 1', start: 0, bursts: [ { device: 'cpu', quantum: 3 }, { device: 'io', quantum: 2 }, { device: 'cpu', quantum: 2}, { device: 'io', quantum: 8 } ] },
-
 	{ id: 1, description: 'Programa 2', start: 2, bursts: [ { device: 'cpu', quantum: 1 }, { device: 'io', quantum: 2 }, { device: 'cpu', quantum: 2}, { device: 'io', quantum: 8 } ] }
 
 ];
@@ -17,6 +16,7 @@ var TasksStore = Reflux.createStore({
 		//Listen to changes
 		Actions.addTask.listen(this.addTask);
 		Actions.updateTask.listen(this.updateTask);
+		Actions.deleteTask.listen(this.deleteTask); 
 	},
 
 	addTask: function(){
@@ -27,8 +27,13 @@ var TasksStore = Reflux.createStore({
 		this.trigger();
 	},
 
+	deleteTask: function(task){
+		__tasks.splice(__tasks.indexOf(task), 1);
+		this.trigger();
+	},
+
 	setTasks: function(tasks){
-		__tasks = task;
+		__tasks = tasks;
 		this.trigger();
 	},
 

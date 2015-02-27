@@ -40,6 +40,11 @@ var InputRow = React.createClass({
 		Actions.updateTask(task);
 	},
 
+	onDeleteTask: function(event){
+		var task = this.props.data;
+		Actions.deleteTask(task);
+	},
+
 	render: function(){
 		return (
 			<tr>		
@@ -49,7 +54,7 @@ var InputRow = React.createClass({
 				<td><input type="number" placeholder="I/O" value={this.props.data.bursts[1].quantum} onChange={this.onChangeIOQuantum1} /></td>
 				<td><input type="number" placeholder="CPU" value={this.props.data.bursts[2].quantum} onChange={this.onChangeCpuQuantum2} /></td>
 				<td><input type="number" placeholder="I/O" value={this.props.data.bursts[3].quantum} onChange={this.onChangeIOQuantum2} /></td>
-				<td><a href="#">Eliminar</a></td>
+				<td><a onClick={this.onDeleteTask}>Eliminar</a></td>
 			</tr>
 		);
 	}
