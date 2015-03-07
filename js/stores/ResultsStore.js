@@ -1,7 +1,13 @@
-var Reflux = require('reflux');
-var Actions = require('../actions/Actions')
+var Reflux 		= require('reflux');
+var Actions 	= require('../actions/Actions')
 
-var __results = { tasks: [], count: 0 }; 
+var Fifo 		= require('../algorithms/Fifo');
+var RoundRobbin = require('../algorithms/RoundRobbin');
+var SJF 		= require('../algorithms/SJF');
+
+
+var __results 	= { tasks: [], count: 0 }; 
+
 
 var ResultsStore = Reflux.createStore({
 
@@ -10,6 +16,7 @@ var ResultsStore = Reflux.createStore({
 	},
 
 	generate: function(){
+
 		__results.tasks = [
 			{ id: 1, description: 'Programa 1', result: [null, 'cpu', 'cpu', 'cpu', 'io', 'io', null, 'cpu', null, null ] },
 			{ id: 2, description: 'Programa 2', result: ['cpu', 'io',  'io',  'io', null, 'cpu', 'io', null, 'io', 'cpu'] }
@@ -18,6 +25,7 @@ var ResultsStore = Reflux.createStore({
 		__results.count = 10;
 		
 		this.trigger();
+		
 	},
 
 	getResults: function(){
