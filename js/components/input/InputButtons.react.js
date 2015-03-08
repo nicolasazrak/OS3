@@ -7,8 +7,9 @@ var InputButtons = React.createClass({
 		Actions.addTask();
 	},
 
-	onGenerate: function () {
-		Actions.confirmTasks();
+	onGenerate: function (event) {
+		var algorithm = this.refs.algorithm.getDOMNode().value;
+		Actions.confirmTasks(algorithm);
 	},
 
 	render: function(){
@@ -21,9 +22,9 @@ var InputButtons = React.createClass({
 				</div>
 				
 				<div className="large-4 columns">
-						<select name="algoritmo" id="">
-							<option value="fifo">Fifo</option>
-							<option value="round_robin">Round robin</option>
+						<select ref="algorithm" id="">
+							<option value="Fifo">Fifo</option>
+							<option value="RoundRobin">Round robin</option>
 						</select>
 				</div>
 					
