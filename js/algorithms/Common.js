@@ -1,11 +1,10 @@
-module.exports = function(){
+module.exports = {
 
-	addTasksToQueue = function(queue, tasks, time){
+	addTasksToQueue: function(queue, tasks, time){
 		tasks.forEach(function (task) {
 			if(task.start === time){
 				queue.push(task);
 			}
 		});
 	}
-
 }

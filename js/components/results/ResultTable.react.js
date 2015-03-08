@@ -27,6 +27,7 @@ var ResultTable = React.createClass({
 	},
 
 	render: function(){
+		console.log(this);
 		return (
 			<div className="row">
 				<table className="table-results">
