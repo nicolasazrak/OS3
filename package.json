@@ -4,7 +4,7 @@
   "description": "Operative System Planification Simulator",
   "main": "js/app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jasmine-node spec",
     "watch": "watchify -o js/bundle.js -v -d .",
     "build": "browserify . | uglifyjs -cm > js/bundle.min.js"
   },
@@ -22,6 +22,7 @@
     "babelify": "^5.0.3",
     "browserify": "^9.0.3",
     "envify": "^3.2.0",
+    "jasmine-node": "^1.14.5",
     "react": "^0.12.2",
     "reflux": "^0.2.5",
     "uglify-js": "^2.4.16",

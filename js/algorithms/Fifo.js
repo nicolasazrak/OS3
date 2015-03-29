@@ -23,10 +23,10 @@ RETURNS:
 
 'use strict';
 
-var newQueue = [], readyQueue = [], waitQueue = [], exitQueue = [], result = [], time = 0;
+var newQueue = [], readyQueue = [], waitQueue = [], exitQueue = [], results = {}, time = 0;
 
 //inputMock 2.0
-newQueue = [
+var newQueueEx = [
 	{ id: 0, description: 'Programa 1', start: 0, threads: [{ id: 0, start: 0, bursts: [ { device: 'cpu', quantum: 3 }, { device: 'io', quantum: 2 }, { device: 'cpu', quantum: 2}, { device: 'io', quantum: 8 } ] }] },
 	{ id: 1, description: 'Programa 2', start: 2, threads: [{ id: 1, start: 2, bursts: [ { device: 'cpu', quantum: 1 }, { device: 'io', quantum: 2 }, { device: 'cpu', quantum: 2}, { device: 'io', quantum: 8 } ] }] }
 ];
@@ -41,7 +41,9 @@ newQueue = [
 			time++;
 		} while (readyQueue.length != 0);
 	},
-	mock: function(){
+	mock: function(newQueue){
+		newQueue = newQueue || newQueueEx;
+
 		//Init
 		var __results = [];
 		newQueue.forEach(function(){ __results.push([]); });
@@ -149,16 +151,14 @@ newQueue = [
 		console.log('Tiempo: ' + time);
 		console.log(__results);
 
-		__results.tasks = [
+		results.tasks = [
 			{ id: 1, description: 'Programa 1', result: __results[0] },
 			{ id: 2, description: 'Programa 2', result: __results[1] }
 		];
 		
-		__results.count = time;
+		results.count = time;
 
-		//
-
-		return __results;
+		return results;
 	}
 
 };
