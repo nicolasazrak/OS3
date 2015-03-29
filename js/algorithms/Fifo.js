@@ -28,10 +28,24 @@ RETURNS:
 
 var readyQueue = [], waitQueue = [], exitQueue = [], result = [], time = 0;
 
-var inputMock = 	[
-		{ id: 0, description: 'Programa 1', start: 0, bursts: [ { device: 'cpu', quantum: 3 }, { device: 'io', quantum: 2 }, { device: 'cpu', quantum: 2}, { device: 'io', quantum: 8 } ] },
-		{ id: 1, description: 'Programa 2', start: 2, bursts: [ { device: 'cpu', quantum: 1 }, { device: 'io', quantum: 2 }, { device: 'cpu', quantum: 2}, { device: 'io', quantum: 8 } ] }
-	];
+var inputMock = [
+	{ id: 0, description: 'Programa 1', start: 0, bursts: [ { device: 'cpu', quantum: 3 }, { device: 'io', quantum: 2 }, { device: 'cpu', quantum: 2}, { device: 'io', quantum: 8 } ] },
+	{ id: 1, description: 'Programa 2', start: 2, bursts: [ { device: 'cpu', quantum: 1 }, { device: 'io', quantum: 2 }, { device: 'cpu', quantum: 2}, { device: 'io', quantum: 8 } ] }
+];
+
+//inputMock 2.0
+
+var inputMock2 = [
+	{ id: 0, description: 'Programa 1', threads: [{ start: 0, bursts: [ { device: 'cpu', quantum: 3 }, { device: 'io', quantum: 2 }, { device: 'cpu', quantum: 2}, { device: 'io', quantum: 8 } ] }] },
+	{ id: 1, description: 'Programa 2', threads: [{ start: 2, bursts: [ { device: 'cpu', quantum: 1 }, { device: 'io', quantum: 2 }, { device: 'cpu', quantum: 2}, { device: 'io', quantum: 8 } ] }] }
+];
+/*
+	[
+		{ id: 1, description: 'Programa 1', result: [null, 'ul1', 'ult1', 'ult1', 'io', 'io', null, 'ult1', null, null ] },
+		{ id: 2, description: 'Programa 2', result: ['ult1', 'io',  'io',  'io', null, 'ult1', 'io', null, 'io', 'ult1'] }
+	]
+
+*/
 
 
 module.exports = {
@@ -45,7 +59,9 @@ module.exports = {
 		} while (readyQueue.length != 0);
 	},
 	mock: function(){
-		var __results = [[],[]];
+		//Init
+		var __results = [];
+		inputMock.forEach(function(){ __results.push([]); });
 
 		do {
 			//Init
@@ -61,7 +77,7 @@ module.exports = {
 			//E/S
 			waitQueue.forEach(function(task){
 				if(task.bursts[0].quantum == 0) {
-					waitQueue[0].bursts.splice(0, 1);
+					task.bursts.splice(0, 1);
 					readyQueue.push(waitQueue.splice(0, 1)[0]);
 				}
 			});
@@ -114,8 +130,9 @@ module.exports = {
 
 		} while(readyQueue.length != 0 || waitQueue.length != 0 || inputMock.length != 0)
 
+
 		//__results.count = time;
-		console.log('Tiempo: ' + time-1);
+		console.log('Tiempo: ' + time);
 		console.log(__results);
 
 		__results.tasks = [
@@ -123,7 +140,7 @@ module.exports = {
 			{ id: 2, description: 'Programa 2', result: __results[1] }
 		];
 		
-		__results.count = time-1;
+		__results.count = time;
 
 		//
 

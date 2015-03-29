@@ -33,7 +33,7 @@ var InputTable = React.createClass({
 			<div className="row">
 				<form>
 					<fieldset>
-						<legend>Alrogitmo</legend>
+						<legend>Algoritmo</legend>
 						<table>
 							<thead>
 								<InputHead />
