@@ -27,8 +27,8 @@ var InputTable = React.createClass({
 	getInputKLTs: function () {
 
 		var allTasks =  this.state.klts.map( klt => {
-			return  klt.ULTs.map( ult => {
-				return <InputRow key={ult.id + "-" + klt.id} ult={ult} klt={klt} /> ;
+			return  klt.ULTs.map( (ult, index, array) => {
+				return <InputRow key={ult.id + "-" + klt.id} ult={ult} klt={klt} showAddULT={index === 0} /> ;
 			})
 		} );
 		return [].concat.apply(allTasks);

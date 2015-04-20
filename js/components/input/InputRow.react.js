@@ -50,6 +50,12 @@ var InputRow = React.createClass({
 		Actions.addULT(this.props.klt);
 	},
 
+	getAddULTButtonStyle: function(){
+		return {
+			display: this.props.showAddULT ? '' : 'none'
+		};
+	},
+
 	render: function(){
 		return (
 			<tr>
@@ -59,8 +65,8 @@ var InputRow = React.createClass({
 				<td><input type="number" placeholder="I/O" value={this.props.ult.bursts[1].quantum} onChange={this.onChangeIOQuantum1} /></td>
 				<td><input type="number" placeholder="CPU" value={this.props.ult.bursts[2].quantum} onChange={this.onChangeCpuQuantum2} /></td>
 				<td><input type="number" placeholder="I/O" value={this.props.ult.bursts[3].quantum} onChange={this.onChangeIOQuantum2} /></td>
-				<td width="100"><a className="button postfix alert" onClick={this.onDeleteULT}>Eliminar ULT</a></td>
-				<td width="150"><a className="button postfix success" onClick={this.onAddULT}>Agregar ULT</a></td>
+				<td width="150"><a className="button postfix alert" onClick={this.onDeleteULT}>Eliminar ULT</a></td>
+				<td width="150"><a className="button postfix success" style={this.getAddULTButtonStyle()} onClick={this.onAddULT}>Agregar ULT</a></td>
 			</tr>
 		);
 	}

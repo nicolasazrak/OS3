@@ -7,7 +7,6 @@ var ResultsStore 	= require('../../stores/ResultsStore');
 var ResultTable = React.createClass({
 
 	getResults: function(){
-		console.log(this.state.results);
 		return this.state.results.tasks.map( result => { return <ResultRow key={result.id} data={result} /> } );
 	},
 
@@ -27,7 +26,6 @@ var ResultTable = React.createClass({
 	},
 
 	render: function(){
-		console.log(this);
 		return (
 			<div className="row">
 				<table className="table-results">
@@ -47,5 +45,3 @@ var ResultTable = React.createClass({
 
 
 module.exports = ResultTable;
-
-

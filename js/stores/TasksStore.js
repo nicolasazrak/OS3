@@ -19,22 +19,22 @@ var __klts = [
 
 ];
 
-
+var kltCounter = 3;
 
 var TasksStore = Reflux.createStore({
 
 	init: function(){
 		//Listen to changes
 		Actions.addKLT.listen(this.addKLT);
-		Actions.updateKLT.listen(this.updateKLT);
-
+		Actions.updateULT.listen(this.updateULT);
 		Actions.addULT.listen(this.addULT);
 		Actions.deleteULT.listen(this.deleteULT);
 	},
 
 	addKLT: function(){
-		var id = __klts.length + 1;
+		var id = kltCounter++;
 		var newKLT = { id: id, ultCounter: 0, ULTs: [] };
+		this.addULT(newKLT);
 		__klts.push(newKLT);
 		this.trigger();
 	},
@@ -43,13 +43,19 @@ var TasksStore = Reflux.createStore({
 		klt.ultCounter++;
 		var newULT = { id: klt.ultCounter, description: 'KLT '+klt.id+'/ ULT ' + klt.ultCounter, start: 0, bursts: [ { device: 'cpu', quantum: 0 }, { device: 'io', quantum: 0 }, { device: 'cpu', quantum: 0}, { device: 'io', quantum: 0 } ]}
 		klt.ULTs.push(newULT);
-		console.log(klt);
 		this.trigger();
 	},
 
 	deleteULT: function(klt, ult){
-
+		klt.ULTs.splice(klt.ULTs.indexOf(ult), 1);
+		if(klt.ULTs.length === 0){
+			this.deleteKLT(klt);
+		}
 		this.trigger();
+	},
+
+	deleteKLT: function(klt){
+		__klts.splice(__klts.indexOf(klt), 1);
 	},
 
 	setTasks: function(klts){
@@ -58,6 +64,8 @@ var TasksStore = Reflux.createStore({
 	},
 
 	updateULT: function(klt, newULT){
+		var pos = klt.ULTs.indexOf(newULT);
+		klt.ULTs[pos] = newULT;
 		this.trigger();
 	},
 
