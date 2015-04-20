@@ -5,8 +5,8 @@
   "main": "js/app.js",
   "scripts": {
     "test": "jasmine-node spec",
-    "watch": "watchify -o js/bundle.js -v -d .",
-    "build": "browserify . | uglifyjs -cm > js/bundle.min.js"
+    "watch": "watchify -o dist/bundle.js -v -d .",
+    "build": "browserify . | uglifyjs -cm > dist/bundle.min.js"
   },
   "repository": {
     "type": "git",

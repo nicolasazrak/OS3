@@ -13,6 +13,7 @@ var InputHead = React.createClass({
 				<th>CPU</th>
 				<th>I/O</th>
 				<th></th>
+				<th></th>
 			</tr>
 		);
 	}
@@ -23,5 +24,3 @@ var InputHead = React.createClass({
 
 
 module.exports = InputHead;
-
-

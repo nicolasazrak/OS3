@@ -6,21 +6,21 @@ var RoundRobin = require('../algorithms/RoundRobin');
 var SJF 		= require('../algorithms/SJF');
 
 
-var __results 	= { tasks: [], count: 0 }; 
+var __results 	= { tasks: [], count: 0 };
 
 
 var ResultsStore = Reflux.createStore({
 
 	init: function(){
-		Actions.confirmTasks.listen(this.generate);
+		Actions.confirmKLTs.listen(this.generate);
 	},
 
 	generate: function(algorithm){
 
 		__results = eval(algorithm).mock();
-		
+
 		this.trigger();
-		
+
 	},
 
 	getResults: function(){

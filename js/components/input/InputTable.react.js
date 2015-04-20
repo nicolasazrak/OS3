@@ -10,13 +10,13 @@ var TasksStore 		= require('../../stores/TasksStore');
 var InputTable = React.createClass({
 
 	getInitialState: function(){
-		return { tasks: TasksStore.getTasks() };
+		return { klts: TasksStore.getKLTs() };
 	},
 
 	componentDidMount: function(){
 		var self = this;
 		this.unsubscribe = TasksStore.listen( () => {
-			self.setState( { tasks: TasksStore.getTasks() } );
+			self.setState( { klts: TasksStore.getKLTs() } );
 		});
 	},
 
@@ -24,8 +24,15 @@ var InputTable = React.createClass({
 		this.unsubscribe();
 	},
 
-	getInputTasks: function () {
-		return this.state.tasks.map( task => { return  <InputRow key={task.id} data={task} /> ; } );
+	getInputKLTs: function () {
+
+		var allTasks =  this.state.klts.map( klt => {
+			return  klt.ULTs.map( ult => {
+				return <InputRow key={ult.id + "-" + klt.id} ult={ult} klt={klt} /> ;
+			})
+		} );
+		return [].concat.apply(allTasks);
+
 	},
 
 	render: function(){
@@ -39,7 +46,7 @@ var InputTable = React.createClass({
 								<InputHead />
 							</thead>
 							<tbody>
-								{this.getInputTasks()}
+								{this.getInputKLTs()}
 							</tbody>
 						</table>
 						<br />
@@ -56,5 +63,3 @@ var InputTable = React.createClass({
 
 
 module.exports = InputTable;
-
-
