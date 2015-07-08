@@ -31,14 +31,14 @@ module.exports = {
 
 		//Init
 		var __results = [];
-		newQueue.forEach(function(){ __results.push([]); });
+		newQueue.forEach(() => { __results.push([]); });
 
 		do {
 			//Init
-			__results.forEach(function(r){ r.push(null); });
+			__results.forEach( r => { r.push(null); });
 
 			//Reloj
-			readyQueue.forEach(function(task){
+			readyQueue.forEach( task => {
 				var currentThread = task.ULTs[0];
 
 				if(currentThread.bursts[0].quantum === 0) {
@@ -50,7 +50,7 @@ module.exports = {
 			});
 
 			//E/S
-			waitQueue.forEach(function(task){
+			waitQueue.forEach( task => {
 				var currentThread = task.ULTs[0];
 
 				if(currentThread.bursts[0].quantum === 0) {
@@ -64,7 +64,7 @@ module.exports = {
 			});
 
 			//Proceso nuevo
-			newQueue.forEach(function(task){
+			newQueue.forEach( task => {
 				/* Futura implementacion de start ULT
 				//Obtener el thread de menor start_time
 				var firstThread = task.ULTs.reduce(function(prev, current){

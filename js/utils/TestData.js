@@ -110,5 +110,6 @@ var tasksWithoutUlts = [
 ];
 
 module.exports = {
-	tasksWithUlts: tasksWithUlts
+	tasksWithUlts: tasksWithUlts,
+	tasksWithoutUlts: tasksWithoutUlts
 };
