@@ -1,61 +1,23 @@
+'use strict';
+
 var Common = require('./Common');
 
+var newQueue = [], readyQueue = [], waitQueue = [], exitQueue = [], results = {}, time = 0;
+
 /*
-
-Transforms:
-
-	[
-		{
-			id: 0,
-			description: 'Programa 1',
-			start: 0,
-			ULTs: [
-				{
-					id: 0,
-					start: 0,
-					bursts: [
-						{ device: 'cpu', quantum: 3 },
-						{ device: 'io', quantum: 2 },
-						{ device: 'cpu', quantum: 2},
-						{ device: 'io', quantum: 8 }
-					]
-				}
-			]
-		},
-		{
-			id: 1,
-			description: 'Programa 2',
-			start: 2,
-			ULTs: [
-				{
-					id: 1,
-					start: 2,
-					bursts: [
-						{ device: 'cpu', quantum: 1 },
-						{ device: 'io', quantum: 2 },
-						{ device: 'cpu', quantum: 2},
-						{ device: 'io', quantum: 8 }
-					]
-				}
-			]
-		}
-	]
-
-INTERMEDIATE:
-
-	[ [null, 'ult1'], ['ult1', 'io'], ['ult1', 'io'], ['io', null] ];
-
 
 RETURNS:
 
 	[
 		{
-			id: 1,
+			klt_id: 1,
+			ult_id: 2,
 			description: 'Programa 1',
 			result: [null, 'ul1', 'ult1', 'ult1', 'io', 'io', null, 'ult1', null, null]
 		},
 		{
-			id: 2,
+			klt_id: 2,
+			ult_id: 2,
 			description: 'Programa 2',
 			result: ['ult1', 'io',  'io',  'io', null, 'ult1', 'io', null, 'io', 'ult1']
 		}
@@ -63,28 +25,9 @@ RETURNS:
 
 */
 
-'use strict';
+module.exports = {
 
-var newQueue = [], readyQueue = [], waitQueue = [], exitQueue = [], results = {}, time = 0;
-
-//inputMock 2.0
-var newQueueEx = [
-	{ id: 0, description: 'Programa 1', start: 0, ULTs: [{ id: 0, start: 0, bursts: [ { device: 'cpu', quantum: 3 }, { device: 'io', quantum: 2 }, { device: 'cpu', quantum: 2}, { device: 'io', quantum: 8 } ] }] },
-	{ id: 1, description: 'Programa 2', start: 2, ULTs: [{ id: 1, start: 2, bursts: [ { device: 'cpu', quantum: 1 }, { device: 'io', quantum: 2 }, { device: 'cpu', quantum: 2}, { device: 'io', quantum: 8 } ] }] }
-];
-
- module.exports = {
-	addTask: function(tasks){
-		do {
-			Common.addTasksToQueue(queue, tasks, time);
-
-
-
-			time++;
-		} while (readyQueue.length !== 0);
-	},
-	mock: function(newQueue){
-		newQueue = newQueue || newQueueEx;
+	schedule: function(newQueue){
 
 		//Init
 		var __results = [];
@@ -105,6 +48,7 @@ var newQueueEx = [
 					//En este caso no se mueve al thread a ningun lado porque es el que ocaciono el IO
 				}
 			});
+
 			//E/S
 			waitQueue.forEach(function(task){
 				var currentThread = task.ULTs[0];
@@ -118,6 +62,7 @@ var newQueueEx = [
 					task.ULTs.push(currentThread);
 				}
 			});
+
 			//Proceso nuevo
 			newQueue.forEach(function(task){
 				/* Futura implementacion de start ULT

@@ -6,16 +6,23 @@ var ResultsStore 	= require('../../stores/ResultsStore');
 
 var ResultTable = React.createClass({
 
-	getResults: function(){
-		return this.state.results.tasks.map( result => { return <ResultRow key={result.id} data={result} /> } );
+	getResultsRows: function(){
+		return this.state.results.map( result => {
+			return <ResultRow key={result.klt_id.toString() + result.ult_id.toString()} data={result} />
+		} );
 	},
 
 	getMaxQuantumCount: function(){
-		return this.state.results.count;
+		if(this.state.results.length === 0){
+			return 0;
+		}
+		return this.state.results[0].result.length;
 	},
 
 	getInitialState: function(){
-		return { results: ResultsStore.getResults() };
+		return {
+			results: ResultsStore.getResults()
+		};
 	},
 
 	componentDidMount: function(){
@@ -33,7 +40,7 @@ var ResultTable = React.createClass({
 						<ResultHead max_quantum_count={this.getMaxQuantumCount()} />
 					</thead>
 					<tbody>
-						{this.getResults()}
+						{this.getResultsRows()}
 					</tbody>
 				</table>
 			</div>

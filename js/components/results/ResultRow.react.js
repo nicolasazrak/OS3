@@ -25,5 +25,3 @@ var ResultRow = React.createClass({
 
 
 module.exports = ResultRow;
-
-
