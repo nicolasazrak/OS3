@@ -2,7 +2,7 @@ var Reflux 		= require('reflux');
 var Actions		= require('../actions/Actions');
 var TestData 	= require('../utils/TestData');
 
-var __klts = TestData.tasksWithUlts;
+var __klts = TestData.tasksWithoutUlts;
 
 var kltCounter = 3;
 
