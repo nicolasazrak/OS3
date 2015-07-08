@@ -1,14 +1,47 @@
 var Common = require('./Common');
 
 /*
-Transforms: 
+
+Transforms:
 
 	[
-		{ id: 0, description: 'Programa 1', start: 0, threads: [{ id: 0, start: 0, bursts: [ { device: 'cpu', quantum: 3 }, { device: 'io', quantum: 2 }, { device: 'cpu', quantum: 2}, { device: 'io', quantum: 8 } ] }] },
-		{ id: 1, description: 'Programa 2', start: 2, threads: [{ id: 1, start: 2, bursts: [ { device: 'cpu', quantum: 1 }, { device: 'io', quantum: 2 }, { device: 'cpu', quantum: 2}, { device: 'io', quantum: 8 } ] }] }
+		{
+			id: 0,
+			description: 'Programa 1',
+			start: 0,
+			ULTs: [
+				{
+					id: 0,
+					start: 0,
+					bursts: [
+						{ device: 'cpu', quantum: 3 },
+						{ device: 'io', quantum: 2 },
+						{ device: 'cpu', quantum: 2},
+						{ device: 'io', quantum: 8 }
+					]
+				}
+			]
+		},
+		{
+			id: 1,
+			description: 'Programa 2',
+			start: 2,
+			ULTs: [
+				{
+					id: 1,
+					start: 2,
+					bursts: [
+						{ device: 'cpu', quantum: 1 },
+						{ device: 'io', quantum: 2 },
+						{ device: 'cpu', quantum: 2},
+						{ device: 'io', quantum: 8 }
+					]
+				}
+			]
+		}
 	]
 
-INTERMEDIATE: 
+INTERMEDIATE:
 
 	[ [null, 'ult1'], ['ult1', 'io'], ['ult1', 'io'], ['io', null] ];
 
@@ -16,9 +49,18 @@ INTERMEDIATE:
 RETURNS:
 
 	[
-		{ id: 1, description: 'Programa 1', result: [null, 'ul1', 'ult1', 'ult1', 'io', 'io', null, 'ult1', null, null ] },
-		{ id: 2, description: 'Programa 2', result: ['ult1', 'io',  'io',  'io', null, 'ult1', 'io', null, 'io', 'ult1'] }
+		{
+			id: 1,
+			description: 'Programa 1',
+			result: [null, 'ul1', 'ult1', 'ult1', 'io', 'io', null, 'ult1', null, null]
+		},
+		{
+			id: 2,
+			description: 'Programa 2',
+			result: ['ult1', 'io',  'io',  'io', null, 'ult1', 'io', null, 'io', 'ult1']
+		}
 	]
+
 */
 
 'use strict';
@@ -27,8 +69,8 @@ var newQueue = [], readyQueue = [], waitQueue = [], exitQueue = [], results = {}
 
 //inputMock 2.0
 var newQueueEx = [
-	{ id: 0, description: 'Programa 1', start: 0, threads: [{ id: 0, start: 0, bursts: [ { device: 'cpu', quantum: 3 }, { device: 'io', quantum: 2 }, { device: 'cpu', quantum: 2}, { device: 'io', quantum: 8 } ] }] },
-	{ id: 1, description: 'Programa 2', start: 2, threads: [{ id: 1, start: 2, bursts: [ { device: 'cpu', quantum: 1 }, { device: 'io', quantum: 2 }, { device: 'cpu', quantum: 2}, { device: 'io', quantum: 8 } ] }] }
+	{ id: 0, description: 'Programa 1', start: 0, ULTs: [{ id: 0, start: 0, bursts: [ { device: 'cpu', quantum: 3 }, { device: 'io', quantum: 2 }, { device: 'cpu', quantum: 2}, { device: 'io', quantum: 8 } ] }] },
+	{ id: 1, description: 'Programa 2', start: 2, ULTs: [{ id: 1, start: 2, bursts: [ { device: 'cpu', quantum: 1 }, { device: 'io', quantum: 2 }, { device: 'cpu', quantum: 2}, { device: 'io', quantum: 8 } ] }] }
 ];
 
  module.exports = {
@@ -39,7 +81,7 @@ var newQueueEx = [
 
 
 			time++;
-		} while (readyQueue.length != 0);
+		} while (readyQueue.length !== 0);
 	},
 	mock: function(newQueue){
 		newQueue = newQueue || newQueueEx;
@@ -54,9 +96,9 @@ var newQueueEx = [
 
 			//Reloj
 			readyQueue.forEach(function(task){
-				var currentThread = task.threads[0];
+				var currentThread = task.ULTs[0];
 
-				if(currentThread.bursts[0].quantum == 0) {
+				if(currentThread.bursts[0].quantum === 0) {
 					currentThread.bursts.splice(0, 1);
 					waitQueue.push(readyQueue.splice(0, 1)[0]);
 
@@ -65,28 +107,28 @@ var newQueueEx = [
 			});
 			//E/S
 			waitQueue.forEach(function(task){
-				var currentThread = task.threads[0];
+				var currentThread = task.ULTs[0];
 
-				if(currentThread.bursts[0].quantum == 0) {
+				if(currentThread.bursts[0].quantum === 0) {
 					currentThread.bursts.splice(0, 1);
 					readyQueue.push(waitQueue.splice(0, 1)[0]);
 
 					//Mover thread al final de la threadQueue
-					task.threads.shift();
-					task.threads.push(currentThread);
+					task.ULTs.shift();
+					task.ULTs.push(currentThread);
 				}
 			});
 			//Proceso nuevo
 			newQueue.forEach(function(task){
 				/* Futura implementacion de start ULT
 				//Obtener el thread de menor start_time
-				var firstThread = task.threads.reduce(function(prev, current){
+				var firstThread = task.ULTs.reduce(function(prev, current){
 					return (prev.start >= current.start) ? prev : current;
 				});
 
 				//Mover firstThread al primer lugar de la cola de hilos
-				task.threads.splice(newQueue.indexOf(firstThread), 1);
-				task.threads.unshift(firstThread);
+				task.ULTs.splice(newQueue.indexOf(firstThread), 1);
+				task.ULTs.unshift(firstThread);
 
 				//Verificar si el proceso esta listo para entrar a la readyQueue
 				if(firstThread.start == time) {
@@ -106,10 +148,10 @@ var newQueueEx = [
 			//Procesando CPU
 			var currentTask = readyQueue[0];
 
-			if(currentTask != undefined){
-				var currentThread = currentTask.threads[0];
+			if(currentTask !== undefined){
+				var currentThread = currentTask.ULTs[0];
 
-				if(currentThread.bursts[0] != undefined){
+				if(currentThread.bursts[0] !== undefined){
 					console.log('CPU: Ejecutando el programa ' + currentTask.id);
 
 					__results[currentTask.id][time] = 'cpu';
@@ -126,10 +168,10 @@ var newQueueEx = [
 			//Procesando IO
 			var currentTask = waitQueue[0];
 
-			if(currentTask != undefined){
-				var currentThread = currentTask.threads[0];
+			if(currentTask !== undefined){
+				var currentThread = currentTask.ULTs[0];
 
-				if(currentThread.bursts[0] != undefined){
+				if(currentThread.bursts[0] !== undefined){
 					console.log('IO: Ejecutando el programa ' + currentTask.id);
 
 					__results[currentTask.id][time] = 'io';
@@ -144,7 +186,7 @@ var newQueueEx = [
 
 			time++;
 
-		} while(newQueue.length != 0 || readyQueue.length != 0 || waitQueue.length != 0)
+		} while(newQueue.length !== 0 || readyQueue.length !== 0 || waitQueue.length !== 0);
 
 
 		//__results.count = time;
@@ -155,7 +197,7 @@ var newQueueEx = [
 			{ id: 1, description: 'Programa 1', result: __results[0] },
 			{ id: 2, description: 'Programa 2', result: __results[1] }
 		];
-		
+
 		results.count = time;
 
 		return results;

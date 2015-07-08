@@ -1,12 +1,14 @@
 var Reflux 		= require('reflux');
 var Actions 	= require('../actions/Actions')
 
+var TasksStore	= require('./TasksStore');
+
 var Fifo 		= require('../algorithms/Fifo');
 var RoundRobin = require('../algorithms/RoundRobin');
 var SJF 		= require('../algorithms/SJF');
 
 
-var __results 	= { tasks: [], count: 0 };
+var __results 	= { tasks: [] };
 
 
 var ResultsStore = Reflux.createStore({
@@ -17,7 +19,7 @@ var ResultsStore = Reflux.createStore({
 
 	generate: function(algorithm){
 
-		__results = eval(algorithm).mock();
+		//__results = eval(algorithm).mock(TasksStore.getKLTs());
 
 		this.trigger();
 

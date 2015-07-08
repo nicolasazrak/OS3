@@ -24,13 +24,22 @@ var InputTable = React.createClass({
 		this.unsubscribe();
 	},
 
-	getInputKLTs: function () {
+	getKLTsRows: function () {
 
-		var allTasks =  this.state.klts.map( klt => {
+		var allTasks = this.state.klts.map( klt => {
+
+			/* Cada ULT se mappea a una fila de la tabla */
 			return  klt.ULTs.map( (ult, index, array) => {
-				return <InputRow key={ult.id + "-" + klt.id} ult={ult} klt={klt} showAddULT={index === 0} /> ;
+				return <InputRow
+							key={ult.id + "-" + klt.id}
+							ult={ult}
+							klt={klt}
+							showAddULT={index === 0}
+						/> ;
 			})
+
 		} );
+
 		return [].concat.apply(allTasks);
 
 	},
@@ -46,7 +55,7 @@ var InputTable = React.createClass({
 								<InputHead />
 							</thead>
 							<tbody>
-								{this.getInputKLTs()}
+								{this.getKLTsRows()}
 							</tbody>
 						</table>
 						<br />
