@@ -64,7 +64,7 @@ var InputRow = React.createClass({
 
 	render: function(){
 		return (
-			<tr>
+			<tr className="tr-input-row">
 
 				<InputField type="text" className="input-value-large"   placeholder="Programa" value={this.props.ult.description}         onChange={this.onChangeTitle}      />
 				<InputField type="number" placeholder="Llegada"  value={this.props.ult.start}               onChange={this.onChangeArrive}    />

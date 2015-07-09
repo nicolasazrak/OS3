@@ -10,40 +10,37 @@ var InputField = React.createClass({
 		this.setState({ editing: true });
 	},
 
-	handleBlur: function(){
+	/* Originalmente era con onBlur pero por un bug de firefox no se puede hacer */
+	onChange: function(e){
 		/* Se podria hacer una validacion */
-		if(this.props.value == ""){
-			return;
-		}
 		this.setState({ editing: false });
+		this.props.onChange(e);
 	},
 
-	componentDidUpdate: function(){
-		var domNode = React.findDOMNode(this.refs.theInput);
+	inputDidMount: function(component){
+		var domNode = React.findDOMNode(component);
 		if(domNode !== null){
-			domNode.focus();
 			domNode.select();
 		}
 	},
 
 	render: function(){
 
-		var input = <input type={this.props.type}
-				placeholder={this.props.placeholder}
-				value={this.props.value}
-				onBlur={this.handleBlur}
-				className={this.props.className !== undefined ? this.props.className : 'input-value'}
-				ref="theInput"
-				onChange={this.props.onChange}
-			/>;
-
-		var text = <span>{this.props.value}</span>;
-
-		var field = this.state.editing ? input : text;
-
-		return (
-			<td width="100px" className="ui input" onClick={this.handleEdit}>{field}</td>
-		);
+		if(this.state.editing){
+			return (<td>
+				<div className="ui input">
+					<input type={this.props.type}
+							placeholder={this.props.placeholder}
+							value={this.props.value}
+							className={this.props.className !== undefined ? this.props.className : 'input-value'}
+							ref={this.inputDidMount}
+							onChange={this.onChange}
+						/>
+					</div>
+				</td>);
+		}else{
+			return (<td onClick={this.handleEdit}><span>{this.props.value}</span></td>);
+		}
 	}
 
 

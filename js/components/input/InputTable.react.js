@@ -48,7 +48,7 @@ var InputTable = React.createClass({
 		return (
 			<div className="row">
 				<form>
-					<table className="ui celled table">
+					<table className="ui celled table input-table">
 						<thead>
 							<InputHead />
 						</thead>
