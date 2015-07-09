@@ -10,13 +10,16 @@ var TasksStore 		= require('../../stores/TasksStore');
 var InputTable = React.createClass({
 
 	getInitialState: function(){
-		return { klts: TasksStore.getKLTs() };
+		return {
+			klts: TasksStore.getKLTs(),
+			useUlts: TasksStore.useUlts()
+		};
 	},
 
 	componentDidMount: function(){
 		var self = this;
 		this.unsubscribe = TasksStore.listen( () => {
-			self.setState( { klts: TasksStore.getKLTs() } );
+			self.setState( self.getInitialState() );
 		});
 	},
 
@@ -34,6 +37,7 @@ var InputTable = React.createClass({
 							key={ult.id + "-" + klt.id}
 							ult={ult}
 							klt={klt}
+							useUlts={this.state.useUlts}
 							showAddULT={index === 0}
 						/> ;
 			})
@@ -50,14 +54,14 @@ var InputTable = React.createClass({
 				<form>
 					<table className="ui celled table input-table">
 						<thead>
-							<InputHead />
+							<InputHead useUlts={this.state.useUlts} />
 						</thead>
 						<tbody>
 							{this.getKLTsRows()}
 						</tbody>
 					</table>
 					<br />
-					<InputButtons />
+					<InputButtons useUlts={this.state.useUlts} />
 				</form>
 			</div>
 		);

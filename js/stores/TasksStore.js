@@ -5,6 +5,7 @@ var TestData 	= require('../utils/TestData');
 var __klts = TestData.tasksWithoutUlts;
 
 var kltCounter = 3;
+var __useUlts = false;
 
 var TasksStore = Reflux.createStore({
 
@@ -72,6 +73,15 @@ var TasksStore = Reflux.createStore({
 
 	getKLTs: function(){
 		return __klts;
+	},
+
+	useUlts: function(){
+		return __useUlts;
+	},
+
+	toggleUseUlts: function(){
+		__useUlts = !__useUlts;
+		this.trigger();
 	}
 
 
