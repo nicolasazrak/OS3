@@ -37,10 +37,10 @@ var TasksStore = Reflux.createStore({
 			description: 'KLT '+klt.id+'/ ULT ' + klt.ultCounter,
 			start: 0,
 			bursts: [
-				{ device: 'cpu', quantum: 0 },
-				{ device: 'io',  quantum: 0 },
-				{ device: 'cpu', quantum: 0},
-				{ device: 'io',  quantum: 0 }
+				{ device: 'cpu', quantum: Math.floor(Math.random() * 5 + 1) },
+				{ device: 'io',  quantum: Math.floor(Math.random() * 5 + 1) },
+				{ device: 'cpu', quantum: Math.floor(Math.random() * 5 + 1) },
+				{ device: 'io',  quantum: Math.floor(Math.random() * 5 + 1) }
 			]
 		};
 
