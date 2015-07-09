@@ -9,7 +9,7 @@ var RoundRobin  = require('../algorithms/RoundRobin');
 var SJF 		= require('../algorithms/SJF');
 
 
-var __results 	= [];
+var __results 	= null;
 
 
 var ResultsStore = Reflux.createStore({
@@ -19,12 +19,8 @@ var ResultsStore = Reflux.createStore({
 	},
 
 	generate: function(algorithm){
-
-		//__results = eval(algorithm).mock(TasksStore.getKLTs());
-		__results = Fake.schedule(TasksStore.getKLTs());
-
+		__results = eval(algorithm).schedule(TasksStore.getKLTs());
 		this.trigger();
-
 	},
 
 	getResults: function(){

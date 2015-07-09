@@ -6,7 +6,7 @@ var InputHead = React.createClass({
 	render: function(){
 		return (
 			<tr>
-				<th>Programa</th>
+				<th width="200">Programa</th>
 				<th>Llegada</th>
 				<th>CPU</th>
 				<th>I/O</th>

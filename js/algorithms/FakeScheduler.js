@@ -9,6 +9,9 @@ function schedule(qeue){
 	/* KLT 1 */
 	Common.addToOutput(output, 1, 1, 0, 'io');
 	Common.addToOutput(output, 1, 1, 1, 'io');
+	Common.addToOutput(output, 1, 1, 5, 'cpu');
+	Common.addToOutput(output, 1, 1, 6, 'cpu');
+	Common.addToOutput(output, 1, 1, 10, 'io');
 
 	Common.addToOutput(output, 1, 2, 0, 'io');
 	Common.addToOutput(output, 1, 2, 1, 'cpu');
