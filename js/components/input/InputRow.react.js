@@ -1,6 +1,8 @@
 var React = require('react');
 
 var Actions = require('../../actions/Actions');
+var InputField = require('./InputField.react');
+
 
 var InputRow = React.createClass({
 
@@ -64,16 +66,19 @@ var InputRow = React.createClass({
 		return (
 			<tr>
 
-				<td><input type="text"   placeholder="Programa" value={this.props.ult.description}       onChange={this.onChangeTitle} /></td>
-				<td><input type="number" placeholder="Llegada"  value={this.props.ult.start}             onChange={this.onChangeArrive} /></td>
-				<td><input type="number" placeholder="CPU"      value={this.props.ult.bursts[0].quantum} onChange={this.onChangeCpuQuantum1} /></td>
-				<td><input type="number" placeholder="I/O"      value={this.props.ult.bursts[1].quantum} onChange={this.onChangeIOQuantum1} /></td>
-				<td><input type="number" placeholder="CPU"      value={this.props.ult.bursts[2].quantum} onChange={this.onChangeCpuQuantum2} /></td>
-				<td><input type="number" placeholder="I/O"      value={this.props.ult.bursts[3].quantum} onChange={this.onChangeIOQuantum2} /></td>
+				<InputField type="text" className="input-value-large"   placeholder="Programa" value={this.props.ult.description}         onChange={this.onChangeTitle}      />
+				<InputField type="number" placeholder="Llegada"  value={this.props.ult.start}               onChange={this.onChangeArrive}    />
+				<InputField type="number" placeholder="CPU"  value={this.props.ult.bursts[0].quantum}       onChange={this.onChangeCpuQuantum1}    />
+				<InputField type="number" placeholder="I/O"  value={this.props.ult.bursts[1].quantum}       onChange={this.onChangeIOQuantum1}    />
+				<InputField type="number" placeholder="CPU"  value={this.props.ult.bursts[2].quantum}       onChange={this.onChangeCpuQuantum2}    />
+				<InputField type="number" placeholder="I/O"  value={this.props.ult.bursts[3].quantum}       onChange={this.onChangeIOQuantum2}    />
+				<td>
+					<a className="ui red button" onClick={this.onDeleteULT}>Eliminar ULT</a>
+				</td>
+				<td>
+					<a className="ui olive button" style={this.getAddULTButtonStyle()} onClick={this.onAddULT}>Agregar ULT</a>
+				</td>
 
-				<td width="150"><a className="button postfix alert" onClick={this.onDeleteULT}>Eliminar ULT</a></td>
-				<td width="150"><a className="button postfix success" style={this.getAddULTButtonStyle()} onClick={this.onAddULT}>Agregar ULT</a></td>
-				
 			</tr>
 		);
 	}

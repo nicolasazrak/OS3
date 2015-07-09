@@ -48,19 +48,16 @@ var InputTable = React.createClass({
 		return (
 			<div className="row">
 				<form>
-					<fieldset>
-						<legend>Algoritmo</legend>
-						<table>
-							<thead>
-								<InputHead />
-							</thead>
-							<tbody>
-								{this.getKLTsRows()}
-							</tbody>
-						</table>
-						<br />
-						<InputButtons />
-					</fieldset>
+					<table className="ui celled table">
+						<thead>
+							<InputHead />
+						</thead>
+						<tbody>
+							{this.getKLTsRows()}
+						</tbody>
+					</table>
+					<br />
+					<InputButtons />
 				</form>
 			</div>
 		);

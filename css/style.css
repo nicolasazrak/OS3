@@ -14,23 +14,34 @@
 
 
 .cpu {
-	animation: fadein 1s;
-	-moz-animation: fadein 1s; /* Firefox */
-	-webkit-animation: fadein 1s; /* Safari and Chrome */
-	-o-animation: fadein 1s; /* Opera */
+	animation: fadein 2s;
+	-moz-animation: fadein 2s; /* Firefox */
+	-webkit-animation: fadein 2s; /* Safari and Chrome */
+	-o-animation: fadein 2s; /* Opera */
 	background: #DB4B6A;
 }
 
 
 .io {
-	animation: fadein 1s;
-	-moz-animation: fadein 1s; /* Firefox */
-	-webkit-animation: fadein 1s; /* Safari and Chrome */
-	-o-animation: fadein 1s; /* Opera */
+	animation: fadein 2s;
+	-moz-animation: fadein 2s; /* Firefox */
+	-webkit-animation: fadein 2s; /* Safari and Chrome */
+	-o-animation: fadein 2s; /* Opera */
 	background: #653BFF
 }
 
 
+.input-value {
+	width: 70px !important;
+}
+
+.input-value-large {
+	width: 180px !important;
+}
+
+body {
+	padding: 2em;
+}
 
 @keyframes fadein {
     from {
