@@ -18,6 +18,15 @@ var ResultsStore = Reflux.createStore({
 		Actions.confirmKLTs.listen(this.generate);
 	},
 
+	getAlgorithms: function(){
+		return [
+			{ description: 'Fake', algorithm: Fake },
+			{ description: 'Fifo', algorithm: Fifo },
+			{ description: 'Round Robin', algorithm: RoundRobin },
+			{ description: 'SJF', algorithm: SJF },
+		];
+	},
+
 	generate: function(algorithm){
 		__results = eval(algorithm).schedule(TasksStore.getKLTs());
 		this.trigger();

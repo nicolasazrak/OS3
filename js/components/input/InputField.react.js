@@ -10,16 +10,19 @@ var InputField = React.createClass({
 		this.setState({ editing: true });
 	},
 
-	/* Originalmente era con onBlur pero por un bug de firefox no se puede hacer */
-	onChange: function(e){
+	onBlur: function(e){
 		/* Se podria hacer una validacion */
 		this.setState({ editing: false });
-		this.props.onChange(e);
 	},
 
 	inputDidMount: function(component){
 		var domNode = React.findDOMNode(component);
 		if(domNode !== null){
+
+			/* Maldito bug de Firefox */
+			if(navigator.product !== "Gecko"){
+				domNode.focus();
+			}
 			domNode.select();
 		}
 	},
@@ -34,7 +37,8 @@ var InputField = React.createClass({
 							value={this.props.value}
 							className={this.props.className !== undefined ? this.props.className : 'input-value'}
 							ref={this.inputDidMount}
-							onChange={this.onChange}
+							onBlur={this.onBlur}
+							onChange={this.props.onChange}
 						/>
 					</div>
 				</td>);

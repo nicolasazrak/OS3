@@ -4,7 +4,7 @@ var Common = require('./Common');
 
 function schedule(qeue){
 
-	var output = Common.createInitialQeue(qeue);
+	var output = Common.createInitialQueue(qeue);
 
 	/* KLT 1 */
 	Common.addToOutput(output, 1, 1, 0, 'io');

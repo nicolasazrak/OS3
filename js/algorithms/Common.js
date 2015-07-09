@@ -9,7 +9,7 @@ module.exports = {
 	* @param array tasks iniciales
 	* @return array
 	*/
-	createInitialQeue: function(tasks){
+	createInitialQueue: function(tasks){
 		var initialOutput = [];
 		tasks.forEach(function(klt){
 			klt.ULTs.forEach(function(ult){
@@ -27,7 +27,7 @@ module.exports = {
 
 	/**
 	* Le agrega el uso de un dispositivo a la cola a un ult
-	* @param array el array del estilo creado por createInitialQeue
+	* @param array el array del estilo creado por createInitialQueue
 	* @param klt_id el klt a matchear
 	* @param ult_id el ult a matchear
 	* @param time tiempo en el que thread usa el dispositivo
@@ -57,6 +57,22 @@ module.exports = {
 		});
 		return outputArray;
 	},
+
+
+
+
+	/**
+	* Devuelve cual es el proximo recurso que necesita un proceso
+	*
+	*/
+	getNextDeviceForProces: function(tasks, klt_id, ult_id){
+
+	},
+
+	giveQuantumTo: function(task, klt_id, ult_id){
+
+	},
+
 
 
 	/**

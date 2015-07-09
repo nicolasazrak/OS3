@@ -4,6 +4,9 @@ var InputHead = React.createClass({
 
 
 	render: function(){
+
+		var addUltColumn = this.props.useUlts ? <th></th> : null;
+
 		return (
 			<tr className="tr-input-head">
 				<th>Programa</th>
@@ -13,7 +16,7 @@ var InputHead = React.createClass({
 				<th>CPU</th>
 				<th>I/O</th>
 				<th></th>
-				<th></th>
+				{addUltColumn}
 			</tr>
 		);
 	}
