@@ -39,8 +39,15 @@
 	width: 180px !important;
 }
 
-body {
-	padding: 2em;
+
+#algoritmo-label {
+	font-weight: bolder;
+	font-size: 1.1em;
+	margin: 1em;
+}
+
+#div-checkbox {
+	padding-top: 1.9em;
 }
 
 @keyframes fadein {
