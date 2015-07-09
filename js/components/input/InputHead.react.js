@@ -5,8 +5,8 @@ var InputHead = React.createClass({
 
 	render: function(){
 		return (
-			<tr>
-				<th width="200">Programa</th>
+			<tr className="tr-input-head">
+				<th>Programa</th>
 				<th>Llegada</th>
 				<th>CPU</th>
 				<th>I/O</th>

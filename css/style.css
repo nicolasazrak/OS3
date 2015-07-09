@@ -1,7 +1,18 @@
+.tr-input-head ::first-child th {
+	width: 200px;
+}
+
+.tr-input-head th {
+	width: 100px;
+}
+
+.tr-input-row .button {
+	min-width: 140px;
+}
+
 .table-results {
 	width: 100%
 }
-
 
 .table-results tbody td {
 	height: 45px;
@@ -39,9 +50,19 @@
 	width: 180px !important;
 }
 
-body {
-	padding: 2em;
+
+#algoritmo-label {
+	font-weight: bolder;
+	font-size: 1.1em;
+	margin: 1em;
 }
+
+#div-checkbox {
+	padding-top: 1.9em;
+}
+
+
+
 
 @keyframes fadein {
     from {

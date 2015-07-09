@@ -29,7 +29,7 @@ var App = React.createClass({
 		return (
 			<div className="ui center aligned grid">
 
-				<div class="ui hidden divider"></div>
+				<div className="ui hidden divider"></div>
 
 				<div className="row">
 					<h1 className="ui header">Simulador de planificador</h1>

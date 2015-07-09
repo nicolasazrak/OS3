@@ -18,12 +18,17 @@ var InputButtons = React.createClass({
 			<div className="ui center aligned grid">
 
 
-				<div className="three wide column">
+				<div className="four wide column">
 					<a onClick={this.onNewKLT} className="ui primary button">Agregar KLT</a>
 				</div>
 
-				<div className="three wide column">
+				<div className="four wide left aligned column ui checkbox" id="div-checkbox">
+					<input type="checkbox" checked />
+					<label>Usar KLTs</label>
+				</div>
 
+				<div className="four wide column">
+					<label id="algoritmo-label">Algoritmo: </label>
 					<div className="ui compact menu">
 					  <div className="ui simple dropdown item">
 					    Fake
@@ -38,7 +43,7 @@ var InputButtons = React.createClass({
 
 				</div>
 
-				<div className="three wide column">
+				<div className="four wide column">
 					<a onClick={this.onGenerate} className="ui primary button">Simular</a>
 				</div>
 
