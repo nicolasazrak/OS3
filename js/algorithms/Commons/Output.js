@@ -11,8 +11,8 @@ module.exports = {
 	*/
 	createInitialQueue: function(tasks){
 		var initialOutput = [];
-		tasks.forEach(function(klt){
-			klt.ULTs.forEach(function(ult){
+		tasks.forEach( klt => {
+			klt.ULTs.forEach( ult => {
 				initialOutput.push({
 					klt_id: klt.id,
 					ult_id: ult.id,
@@ -26,17 +26,20 @@ module.exports = {
 
 
 	/**
-	* Le agrega el uso de un dispositivo a la cola a un ult
+	* Le agrega el uso de un dispositivo a la cola a un ult recibe params con los valores
 	* @param array el array del estilo creado por createInitialQueue
 	* @param klt_id el klt a matchear
 	* @param ult_id el ult a matchear
-	* @param time tiempo en el que thread usa el dispositivo
+	* @param from tiempo desde el que thread usa el dispositivo
+	* @param duration la cantidad de tiempo que el thread usa el dispositivo
 	* @param string el dispositivo a usar, ej: cpu, io, ...
 	*/
-	addToOutput: function(outputArray, klt_id, ult_id, time, device){
-		outputArray.forEach(function(ult){
-			if(ult.ult_id === ult_id && ult.klt_id === klt_id){
-				ult.result[time] = device;
+	addUsageToOutput: function(usage){
+		usage.output.forEach(function(ult){
+			if(ult.ult_id === usage.ult_id && ult.klt_id === usage.klt_id){
+				for(var i = 0; i < usage.quantum; i++){
+					ult.result[usage.from + i] = usage.device;
+				}
 			}
 		});
 	},
@@ -56,36 +59,6 @@ module.exports = {
 			}
 		});
 		return outputArray;
-	},
-
-
-
-
-	/**
-	* Devuelve cual es el proximo recurso que necesita un proceso
-	*
-	*/
-	getNextDeviceForProces: function(tasks, klt_id, ult_id){
-
-	},
-
-	giveQuantumTo: function(task, klt_id, ult_id){
-
-	},
-
-
-
-	/**
-	*
-	* @param qeue
-	* @param tasks
-	* @param time
-	*/
-	addTasksToQueue: function(queue, tasks, time){
-		tasks.forEach(function (task) {
-			if(task.start === time){
-				queue.push(task);
-			}
-		});
 	}
+
 };
