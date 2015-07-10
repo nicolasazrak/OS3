@@ -42,7 +42,7 @@ var InputField = React.createClass({
 					</div>
 				</td>);
 		}else{
-			return (<td onClick={this.handleEdit}><span>{this.props.value}</span></td>);
+			return (<td title="Clic para editar" onClick={this.handleEdit}><span>{this.props.value}</span></td>);
 		}
 	}
 

@@ -5,7 +5,7 @@ var ResultsStore 	= require('../../stores/ResultsStore');
 var ResultHead = React.createClass({
 	getColums: function () {
 		var colums = [];
-		for(var i = 1; i <= this.props.max_quantum_count; i++) colums.push(<th>{i}</th>);
+		for(var i = 1; i <= this.props.max_quantum_count; i++) colums.push(<th key={i}>{i}</th>);
 		return colums;
 	},
 
@@ -24,5 +24,3 @@ var ResultHead = React.createClass({
 
 
 module.exports = ResultHead;
-
-

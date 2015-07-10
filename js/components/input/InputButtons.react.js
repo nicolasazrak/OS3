@@ -6,9 +6,10 @@ var ResultsStore	= require('../../stores/ResultsStore');
 var InputButtons = React.createClass({
 
 	getInitialState: function(){
+		var algorithms = ResultsStore.getAlgorithms();
 		return {
-			selectedAlgorithm: 'Fake',
-			algorithms: ResultsStore.getAlgorithms()
+			selectedAlgorithm: algorithms[1],
+			algorithms: algorithms
 		};
 	},
 
@@ -17,7 +18,7 @@ var InputButtons = React.createClass({
 	},
 
 	onGenerate: function (event) {
-		Actions.confirmKLTs("Fake");
+		Actions.confirmKLTs(this.state.selectedAlgorithm.algorithm);
 	},
 
 	handleUsesUltClick: function(event){
@@ -58,11 +59,11 @@ var InputButtons = React.createClass({
 					<label id="algoritmo-label">Algoritmo: </label>
 					<div className="ui compact menu">
 						<div className="ui simple dropdown item">
-							{this.state.selectedAlgorithm}
+							{this.state.selectedAlgorithm.description}
 							<i className="dropdown icon"></i>
 							<div className="menu">
-								{this.state.algorithms.map(function(algorithm){
-									return <div className="item" onClick={this.onSelectedAlgorithm(algorithm.description)}>{algorithm.description}</div>
+								{this.state.algorithms.map(function(algorithm, index){
+									return <div className="item" key={index} onClick={this.onSelectedAlgorithm(algorithm)}>{algorithm.description}</div>
 								}, this)}
 							</div>
 						</div>
