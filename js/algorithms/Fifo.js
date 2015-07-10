@@ -26,7 +26,30 @@ class FIFO {
 		return resource.quantum;
 	}
 
-	assignResource(KLT, device){
+	assignIfPossible(device){
+
+		console.log('---> Asignando: ', device);
+
+		if(this.currentUsage[device] !== undefined){
+			console.log('\t El dispositivo ' + device + ' se encuentra ocupado por: ', this.currentUsage[device].klt.id);
+			return;
+		}
+
+		/* Revisa si para el dispositivo que se acaba de liberar */
+		/* Hay alguien en la cola esperando */
+		if(this.devicesQueue.hasOwnProperty(device) && this.devicesQueue[device].length > 0){
+
+			/* Saca el proximo dispositivo de la cola y le asigna el recurso */
+			var KLT = this.chooseKLTFor(device);
+			this.assignResourceTo(KLT, device);
+
+		}else{
+			console.log('\t No hay nadie esperando por el dispositivo');
+		}
+
+	}
+
+	assignResourceTo(KLT, device){
 
 		var assignedResource = KLT.getNextResource();
 
@@ -34,7 +57,7 @@ class FIFO {
 		var givenQuantum = this.getQuantumFor(assignedResource, KLT);
 		var ult_id = KLT.giveResource(device, givenQuantum);
 
-		console.log('Se le asigno el recurso ' + device + ' por ' + givenQuantum + ' quantums a: ', KLT);
+		console.log('\t Asignado por ' + givenQuantum + ' quantums a: ', KLT);
 		/* Le asina el recurso por el tiempo que lo necesite (en FIFO todo el quantum) */
 		this.currentUsage[assignedResource.device] = { klt: KLT, ends: this.currentTime + givenQuantum };
 
@@ -52,11 +75,10 @@ class FIFO {
 
 	checkDeviceQueue(device){
 
-		console.log('Checkeando el uso de: ' + device + ', ahora lo usa: ', this.currentUsage[device]);
-
 		/* Se le termino el tiempo del quantum (o no habia nada ejecutando ) */
 		if(this.currentUsage[device] === undefined || this.currentUsage[device].ends === this.currentTime){
 
+			console.log('Se libero: ' + device + ', estaba siendo usado por: ', this.currentUsage[device]);
 			var previousUsage = this.currentUsage[device];
 
 			if(previousUsage !== undefined){
@@ -65,18 +87,6 @@ class FIFO {
 			}
 
 			delete this.currentUsage[device];
-
-			/* Revisa si para el dispositivo que se acaba de liberar */
-			/* Hay alguien en la cola esperando */
-			if(this.devicesQueue.hasOwnProperty(device) && this.devicesQueue[device].length > 0){
-
-				/* Saca el proximo dispositivo de la cola y le asigna el recurso */
-				var KLT = this.chooseKLTFor(device);
-				this.assignResource(KLT, device);
-
-			}else{
-				console.log('No hay nadie esperando por el dispositivo');
-			}
 
 		}
 
@@ -119,24 +129,25 @@ class FIFO {
 		do {
 
 			console.log('-----------------------------------------------------------------');
+			console.log('Inicia el instante ' + this.currentTime);
+
+			/* Revisa cada dispositivo a ver si alguno se libero para agregarlo a la cola */
+			for(var device in this.devicesQueue){
+				this.checkDeviceQueue(device);
+			}
 
 			var newQueue = queue.filter(KLT => this.currentTime == KLT.getStartTime());
-			console.log('Inicia el instante ' + this.currentTime + ' y llegaron: ', newQueue.map(k => k.getId()));
+			console.log('Llegaron los procesos: ', newQueue.map(k => k.getId()));
 
 			/* Procesamos los nuevos threads */
 			/* Y verificamos que es lo que necesita */
 			newQueue.forEach(this.checkKLTNextRequirement, this);
 
-			/* Revisa cada dispositivo a ver si alguno se libero */
-			for(var device in this.devicesQueue){
-				if(device !== 'cpu'){
-					console.log('--> Ahora se checkea ' + device);
-					this.checkDeviceQueue(device);
-				}
+			/* Revisa cada dispositivo a ver si alguno se libero para agregarlo a la cola */
+			for(var device2 in this.devicesQueue){
+				this.assignIfPossible(device2);
 			}
 
-			console.log('--> Ahora se checkea cpu');
-			this.checkDeviceQueue('cpu');
 
 
 			/* Aumenta el reloj */
