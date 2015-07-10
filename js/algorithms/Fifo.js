@@ -1,113 +1,159 @@
 'use strict';
 
 var Output = require('./Commons/Output');
+var KLTModel = require('./Commons/KLT');
 
-function schedule(queue){
+class FIFO {
 
-	/* TODO: porque tengo que agregarlo aca ??? */
-	/* Cual es el scope de KLT si lo agrego afuera ??? */
-	var KLTModel = require('./Commons/KLT');
-
-	var output = Output.createInitialQueue(queue), //La salida estandar
-		currentTime = 0,   //El reloj que dice en que momento esta
-		currentUsage = {}, //Dice para cada dispositivo si se esta usando, quien y hasta cuando.
-		devicesQeueue = {} //Es la cola para cada dispositivo, tiene los que estan esperando por eso
-		;
-
-
-	var ults = queue.some( task => {
-		return task.ULTs.length > 1;
-	});
-
-	if(ults){
-		alert('El algoritmo todavía no soporta hilos de usuario.');
-		return output;
-	}
-
-	/* TODO clonar de una forma mas linda */
-	/* El JSON.stringify ... es una forma muuy fea de clonar un objeto */
-	queue = queue.map( k => new KLTModel(JSON.parse(JSON.stringify(k))) );
-
-	do {
-
-		/* Busca los nuevos procesos que haya aparecido despues del currentTime */
-		/* que todavía no esten en ninguna cola */
-		/* y que todavia no hayan terminado */
-		var currentTimeQueue = queue.filter(KLT => KLT.getStartTime() <= currentTime);
-		var notInWaitQueue 	 = currentTimeQueue.filter(KLT => !KLT.isWaitingForResource());
-		var notEnded 		 = notInWaitQueue.filter(KLT => !KLT.hasEnded());
-
-		notInWaitQueue.forEach(KLT => {
-
-				var resource = KLT.getNextResource();
-				if(resource === undefined){
-					console.error('Un KLT no devolvio ningun recurso');
-					return;
-				}
-
-				/* Crea la cola para el dispositivo */
-				if(!devicesQeueue.hasOwnProperty(resource.device)){
-					devicesQeueue[resource.device] = [];
-				}
-
-				/* Agrega el KLT a la cola del recurso que necesita */
-				devicesQeueue[resource.device].push(KLT);
-
+	checkUltsSize(queue){
+		var ults = queue.some( task => {
+			return task.ULTs.length > 1;
 		});
 
-		/* Revisa cada dispositivo a ver si alguno se libero */
-		for(var device in devicesQeueue){
+		if(ults){
+			throw 'El algoritmo todavía no soporta ULTs';
+		}
+	}
 
-			/* Se le termino el tiempo del quantum (o no habia nada ejecutando ) */
-			if(currentUsage[device] === undefined || currentUsage[device].ends === currentTime){
+	chooseKLTFor(device){
+		/* Cuando SJF Herede cambia esto y es todo lo que hay que hacer */
+		/* En fifo simplemente sacamos al primero de la lista */
+		return this.devicesQueue[device].shift();
+	}
 
-				delete currentUsage[device];
+	getQuantumFor(resource, KLT){
+		/* Para Round Robbin con reemplazar esto ya deberia andar */
+		return resource.quantum;
+	}
 
-				/* Revisa si para el dispositivo que se acaba de liberar */
-				/* Hay alguien en la cola esperando */
-				if(devicesQeueue.hasOwnProperty(device) && devicesQeueue[device].length > 0){
+	assignResource(KLT, device){
 
-					/* Saca el proximo dispositivo de la cola */
-					var KLT = devicesQeueue[device].shift();
+		var assignedResource = KLT.getNextResource();
 
-					var assignedResource = KLT.getWaitingResource();
+		/* Entonces se le da el recurso a ese KLT */
+		var givenQuantum = this.getQuantumFor(assignedResource, KLT);
+		var ult_id = KLT.giveResource(device, givenQuantum);
 
-					/* Entonces se le da el recurso a ese KLT */
-					var ult_id = KLT.giveResource(assignedResource, assignedResource.quantum);
+		console.log('Se le asigno el recurso ' + device + ' por ' + givenQuantum + ' quantums a: ', KLT);
+		/* Le asina el recurso por el tiempo que lo necesite (en FIFO todo el quantum) */
+		this.currentUsage[assignedResource.device] = { klt: KLT, ends: this.currentTime + givenQuantum };
 
-					/* Le asina el recurso por el tiempo que lo necesite (en FIFO todo el quantum) */
-					currentUsage[assignedResource.device] = { klt: KLT, ends: currentTime + assignedResource.quantum };
+		/* Agrega a la salida que ese KLT se ejecuto en ese momento */
+		Output.addUsageToOutput({
+			output: this.output,
+			klt_id: KLT.getId(),
+			ult_id: ult_id,
+			from: this.currentTime,
+			quantum: assignedResource.quantum,
+			device: device
+		});
 
-					/* Agrega a la salida que ese KLT se ejecuto en ese momento */
-					Output.addUsageToOutput({
-						output: output,
-						klt_id: KLT.getId(),
-						ult_id: ult_id,
-						from: currentTime,
-						quantum: assignedResource.quantum,
-						device: device
-					});
+	}
 
-				}
+	checkDeviceQueue(device){
 
+		console.log('Checkeando el uso de: ' + device + ', ahora lo usa: ', this.currentUsage[device]);
+
+		/* Se le termino el tiempo del quantum (o no habia nada ejecutando ) */
+		if(this.currentUsage[device] === undefined || this.currentUsage[device].ends === this.currentTime){
+
+			var previousUsage = this.currentUsage[device];
+
+			if(previousUsage !== undefined){
+				/* Hay que agregar a la nueva cola lo proximo que use el KLT */
+				this.checkKLTNextRequirement(previousUsage.klt);
+			}
+
+			delete this.currentUsage[device];
+
+			/* Revisa si para el dispositivo que se acaba de liberar */
+			/* Hay alguien en la cola esperando */
+			if(this.devicesQueue.hasOwnProperty(device) && this.devicesQueue[device].length > 0){
+
+				/* Saca el proximo dispositivo de la cola y le asigna el recurso */
+				var KLT = this.chooseKLTFor(device);
+				this.assignResource(KLT, device);
+
+			}else{
+				console.log('No hay nadie esperando por el dispositivo');
 			}
 
 		}
 
-		/* Aumenta el reloj */
-		currentTime++;
+	}
 
-		if(currentTime > 50){
-			/* Es para evitar los loops infinitos no deberia estar */
-			return Output.completeEmptys(output);
+	checkKLTNextRequirement(KLT){
+
+		var resource = KLT.getNextResource();
+		if(resource === undefined){
+			return;
 		}
 
-	} while (queue.some(KLT => !KLT.hasEnded()));
+		console.log('El KLT id ' + KLT.getId() + ' necesita: ', resource);
 
-	return Output.completeEmptys(output);
+		/* Crea la cola para el dispositivo */
+		if(!this.devicesQueue.hasOwnProperty(resource.device)){
+			this.devicesQueue[resource.device] = [];
+		}
+
+		/* Agrega el KLT a la cola del recurso que necesita */
+		this.devicesQueue[resource.device].push(KLT);
+
+		console.log('La cola de ' + resource.device + ' ahora es: ', this.devicesQueue);
+
+	}
+
+	schedule(queue){
+
+		this.output = Output.createInitialQueue(queue); //La salida estandar
+		this.currentTime = 0;  //El reloj que dice en que momento esta
+		this.currentUsage = {}; //Dice para cada dispositivo si se esta usando, quien y hasta cuando.
+		this.devicesQueue = {}; //Es la cola para cada dispositivo, tiene los que estan esperando por eso
+
+		this.checkUltsSize(queue);
+
+		/* TODO clonar de una forma mas linda */
+		/* El JSON.stringify ... es una forma muuy fea de clonar un objeto */
+		queue = queue.map( k => new KLTModel(JSON.parse(JSON.stringify(k))) );
+
+		do {
+
+			console.log('-----------------------------------------------------------------');
+
+			var newQueue = queue.filter(KLT => this.currentTime == KLT.getStartTime());
+			console.log('Inicia el instante ' + this.currentTime + ' y llegaron: ', newQueue.map(k => k.getId()));
+
+			/* Procesamos los nuevos threads */
+			/* Y verificamos que es lo que necesita */
+			newQueue.forEach(this.checkKLTNextRequirement, this);
+
+			/* Revisa cada dispositivo a ver si alguno se libero */
+			for(var device in this.devicesQueue){
+				if(device !== 'cpu'){
+					console.log('--> Ahora se checkea ' + device);
+					this.checkDeviceQueue(device);
+				}
+			}
+
+			console.log('--> Ahora se checkea cpu');
+			this.checkDeviceQueue('cpu');
+
+
+			/* Aumenta el reloj */
+			this.currentTime++;
+
+			if(this.currentTime > 50){
+				/* Es para evitar los loops infinitos no deberia estar */
+				console.error('Se corto por el loop infinito');
+				return Output.completeEmptys(this.output);
+			}
+
+		} while (queue.some(KLT => !KLT.hasEnded()));
+
+		return Output.completeEmptys(this.output);
+
+	}
 
 }
 
-module.exports = {
-	schedule: schedule
-};
+module.exports = FIFO;

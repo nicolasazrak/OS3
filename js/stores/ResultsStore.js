@@ -28,7 +28,8 @@ var ResultsStore = Reflux.createStore({
 	},
 
 	generate: function(algorithm){
-		__results = algorithm.schedule(TasksStore.getKLTs());
+		var scheduler = new algorithm();
+		__results = scheduler.schedule(TasksStore.getKLTs());
 		this.trigger();
 	},
 

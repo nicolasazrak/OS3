@@ -79,12 +79,12 @@ var tasksWithoutUlts = [
 			{
 				id: 1,
 				description: 'KLT 1/ULT 1',
-				start: 2,
+				start: 1,
 				bursts: [
-					{ device: 'cpu', quantum: 1 },
-					{ device: 'io', quantum: 5 },
-					{ device: 'cpu', quantum: 5},
-					{ device: 'io', quantum: 8 }
+					{ device: 'cpu', quantum: 3 },
+					{ device: 'io',  quantum: 5 },
+					{ device: 'cpu', quantum: 5 },
+					{ device: 'io',  quantum: 8 }
 				]
 			}
 		]
@@ -100,9 +100,9 @@ var tasksWithoutUlts = [
 				start: 2,
 				bursts: [
 					{ device: 'cpu', quantum: 1 },
-					{ device: 'io', quantum: 9 },
-					{ device: 'cpu', quantum: 6},
-					{ device: 'io', quantum: 8 }
+					{ device: 'io',  quantum: 9 },
+					{ device: 'cpu', quantum: 6 },
+					{ device: 'io',  quantum: 8 }
 				]
 			}
 		]
