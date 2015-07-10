@@ -18,7 +18,6 @@ var InputField = React.createClass({
 	inputDidMount: function(component){
 		var domNode = React.findDOMNode(component);
 		if(domNode !== null){
-
 			/* Maldito bug de Firefox */
 			if(navigator.product !== "Gecko"){
 				domNode.focus();
@@ -43,7 +42,7 @@ var InputField = React.createClass({
 					</div>
 				</td>);
 		}else{
-			return (<td onClick={this.handleEdit}><span>{this.props.value}</span></td>);
+			return (<td title="Clic para editar" onClick={this.handleEdit}><span>{this.props.value}</span></td>);
 		}
 	}
 

@@ -9,7 +9,7 @@ var tasksWithUlts = [
 				description: 'KLT 1/ULT 1',
 				start: 2,
 				bursts: [
-					{ device: 'cpu', quantum: 1 },
+					{ device: 'cpu', quantum: 2 },
 					{ device: 'io', quantum: 5 },
 					{ device: 'cpu', quantum: 5},
 					{ device: 'io', quantum: 8 }

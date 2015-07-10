@@ -4,8 +4,8 @@ var ResultRow = React.createClass({
 
 	getColums: function () {
 		var colums = [];
-		this.props.data.result.map(function(result){
-			colums.push( <td className={result}></td> );
+		this.props.data.result.map(function(result, index){
+			colums.push( <td key={index} className={result}></td> );
 		});
 		return colums;
 	},

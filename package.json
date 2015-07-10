@@ -1,7 +1,7 @@
 {
-  "name": "OSPS",
+  "name": "OS3",
   "version": "0.0.1",
-  "description": "Operative System Planification Simulator",
+  "description": "Operating System Scheduler Simulator",
   "main": "js/app.js",
   "scripts": {
     "test": "jasmine-node spec",
@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/nicolasazrak/OSPS"
+    "url": "https://github.com/nicolasazrak/OS3"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/nicolasazrak/OSPS/issues"
+    "url": "https://github.com/nicolasazrak/OS3/issues"
   },
-  "homepage": "https://github.com/nicolasazrak/OSPS",
+  "homepage": "https://github.com/nicolasazrak/OS3",
   "dependencies": {
     "babelify": "^6.1.2",
     "browserify": "^10.2.4",
