@@ -16,31 +16,31 @@ var InputRow = React.createClass({
 
 	onChangeArrive: function(event){
 		var task = this.props.ult;
-		task.start = event.target.value;
+		task.start = parseInt(event.target.value);
 		Actions.updateULT(this.props.klt, task);
 	},
 
 	onChangeCpuQuantum1: function(event){
 		var task = this.props.ult;
-		task.bursts[0].quantum = event.target.value;
+		task.bursts[0].quantum = parseInt(event.target.value);
 		Actions.updateULT(this.props.klt, task);
 	},
 
 	onChangeIOQuantum1: function(event){
 		var task = this.props.ult;
-		task.bursts[1].quantum = event.target.value;
+		task.bursts[1].quantum = parseInt(event.target.value);
 		Actions.updateULT(this.props.klt, task);
 	},
 
 	onChangeCpuQuantum2: function(event){
 		var task = this.props.ult;
-		task.bursts[2].quantum = event.target.value;
+		task.bursts[2].quantum = parseInt(event.target.value);
 		Actions.updateULT(this.props.klt, task);
 	},
 
 	onChangeIOQuantum2: function(event){
 		var task = this.props.ult;
-		task.bursts[3].quantum = event.target.value;
+		task.bursts[3].quantum = parseInt(event.target.value);
 		Actions.updateULT(this.props.klt, task);
 	},
 
