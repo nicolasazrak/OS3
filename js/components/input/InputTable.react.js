@@ -48,10 +48,14 @@ var InputTable = React.createClass({
 
 	},
 
+	onSubmit: function(e){
+		e.preventDefault();
+	},
+
 	render: function(){
 		return (
 			<div className="row">
-				<form>
+				<form onSubmit={this.onSubmit}>
 					<table className="ui celled table input-table">
 						<thead>
 							<InputHead useUlts={this.state.useUlts} />

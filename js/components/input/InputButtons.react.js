@@ -18,7 +18,11 @@ var InputButtons = React.createClass({
 	},
 
 	onGenerate: function (event) {
-		Actions.confirmKLTs(this.state.selectedAlgorithm.algorithm);
+		Actions.confirmKLTs(this.state.selectedAlgorithm.algorithm, {
+			quantum: {
+				cpu: parseInt(React.findDOMNode(this.refs.cpuQuantumValue).value) || 3
+			}
+		});
 	},
 
 	handleUsesUltClick: function(event){
@@ -26,10 +30,9 @@ var InputButtons = React.createClass({
 	},
 
 	onSelectedAlgorithm: function(algorithm){
-		var self = this;
 		return function(event){
-			self.setState({ selectedAlgorithm: algorithm });
-		};
+			this.setState({ selectedAlgorithm: algorithm });
+		}.bind(this);
 	},
 
 	render: function(){
@@ -48,15 +51,15 @@ var InputButtons = React.createClass({
 					<a onClick={this.onNewKLT} className="ui primary button">Agregar {kltOrProcessDescription}</a>
 				</div>
 
-				<div className="four wide left aligned column ui checkbox" style={checkBoxStyle} id="div-checkbox">
+				<div className="one wide left aligned column ui checkbox" style={checkBoxStyle} id="div-checkbox">
 					<input id="useUlts" type="checkbox" checked={this.props.useUlts} onChange={this.handleUsesUltClick} />
 					<label htmlFor="useUlts">
 						Usar ULTS
 					</label>
 				</div>
 
-				<div className="four wide column">
-					<label id="algoritmo-label">Algoritmo: </label>
+				<div className="five wide column">
+					<label className="input-label">Algoritmo: </label>
 					<div className="ui compact menu">
 						<div className="ui simple dropdown item">
 							{this.state.selectedAlgorithm.description}
@@ -71,6 +74,15 @@ var InputButtons = React.createClass({
 				</div>
 
 				<div className="four wide column">
+					<div className="ui form">
+						<div className="inline fields">
+							<label className="input-label">Quantum: </label>
+							<input type="number" defaultValue={3} ref="cpuQuantumValue" placeholder="Quantum" />
+						</div>
+					</div>
+				</div>
+
+				<div className="three wide column">
 					<a onClick={this.onGenerate} className="ui primary button">Simular</a>
 				</div>
 

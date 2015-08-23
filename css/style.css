@@ -1,5 +1,7 @@
+/* Input data */
+
 .tr-input-head ::first-child th {
-	width: 200px;
+	min-width: 250px;
 }
 
 .tr-input-head th {
@@ -10,19 +12,24 @@
 	min-width: 140px;
 }
 
-.table-results {
-	width: 100%
+
+/* Results */
+
+div.result-table {
+    width: 960px;
+    overflow-x: scroll;
+    margin-bottom: 5em;
 }
 
+
 .table-results tbody td {
-	height: 45px;
+	height: 40px;
 	min-width: 35px;
 }
 
-.table-results tbody tr td:first-child {
-	width: 150px;
+.table-results tbody td:first-child, .table-results thead th:first-child {
+	min-width: 150px;
 }
-
 
 .cpu {
 	animation: fadein 2s;
@@ -31,7 +38,6 @@
 	-o-animation: fadein 2s; /* Opera */
 	background: #DB4B6A;
 }
-
 
 .io {
 	animation: fadein 2s;
@@ -51,48 +57,12 @@
 }
 
 
-#algoritmo-label {
+.input-label {
 	font-weight: bolder;
-	font-size: 1.1em;
-	margin: 1em;
+	font-size: 1em;
+	margin: 0.1em;
 }
 
 #div-checkbox {
 	padding-top: 1.9em;
-}
-
-
-
-
-@keyframes fadein {
-    from {
-        opacity:0;
-    }
-    to {
-        opacity:1;
-    }
-}
-@-moz-keyframes fadein { /* Firefox */
-    from {
-        opacity:0;
-    }
-    to {
-        opacity:1;
-    }
-}
-@-webkit-keyframes fadein { /* Safari and Chrome */
-    from {
-        opacity:0;
-    }
-    to {
-        opacity:1;
-    }
-}
-@-o-keyframes fadein { /* Opera */
-    from {
-        opacity:0;
-    }
-    to {
-        opacity: 1;
-    }
 }
