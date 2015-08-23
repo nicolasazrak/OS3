@@ -5,7 +5,11 @@ var Fifo = require('./Fifo');
 module.exports = class RoundRobbin extends Fifo {
 
 	getQuantumFor(resource, KLT){
-		return (resource.left > 3) ? 3 : resource.left;
+		console.log(resource);
+		if(resource.device == 'cpu')
+			return Math.min(resource.left, 2);
+
+		return resource.left;
 	}
 
 };
