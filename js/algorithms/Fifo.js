@@ -5,6 +5,7 @@ var KLTModel = require('./Commons/KLT');
 
 class FIFO {
 
+	
 	checkUltsSize(queue){
 		var ults = queue.some( task => {
 			return task.ULTs.length > 1;
@@ -15,17 +16,37 @@ class FIFO {
 		}
 	}
 
+	/**
+	 * Devuelve cual es el proximo KLT para ejecutar el dispositivo
+	 * En FIFO o ROUND ROBBIN, siempre es el primero que este en la cola
+	 * En SJF, es el que necesita menos quantum
+	 * @param  {string} device Dispositivo a buscar
+	 * @return {KLT}        KLT que ejecutara
+	 */
 	chooseKLTFor(device){
 		/* Cuando SJF Herede cambia esto y es todo lo que hay que hacer */
 		/* En fifo simplemente sacamos al primero de la lista */
 		return this.devicesQueue[device].shift();
 	}
 
+	/**
+	 * Devuelve la cantidad de quantum que se le va a asignar al KLT
+	 * En FIFO, se le asigna todo el quantum necesario
+	 * En ROUND ROBBIN, se le asigna el quantum predefinido por el SO
+	 * Podria usarse diferente quantum para cada dispositivo
+	 * @param  {string} resource
+	 * @param  {KLT} KLT
+	 * @return {integer}
+	 */
 	getQuantumFor(resource, KLT){
 		/* Para Round Robbin con reemplazar esto ya deberia andar */
 		return resource.quantum;
 	}
 
+	/**
+	 * Verifica si el dispositivo puede ser asignado a alguien, si se puede, se lo asigna
+	 * @param  {string} device Dispositivo, ej: CPU/IO
+	 */
 	assignIfPossible(device){
 
 		console.log('---> Asignando: ', device);
@@ -49,6 +70,11 @@ class FIFO {
 
 	}
 
+	/**
+	 * Le asigna el recurso
+	 * @param  {KLT} KLT    Klt al que se le va a aginar el recurso
+	 * @param  {string} device Dispositivo que se va a usar
+	 */
 	assignResourceTo(KLT, device){
 
 		var assignedResource = KLT.getNextResource();
@@ -73,6 +99,10 @@ class FIFO {
 
 	}
 
+	/**
+	 * Verifica si el dispositivo se libero, en caso uqe se libere, saca el KLT y chequeea su proxio requerimiento
+	 * @param  {string} device Dispositivo a chequear, ej: CPU/IO
+	 */
 	checkDeviceQueue(device){
 
 		/* Se le termino el tiempo del quantum (o no habia nada ejecutando ) */
@@ -82,6 +112,9 @@ class FIFO {
 			var previousUsage = this.currentUsage[device];
 
 			if(previousUsage !== undefined){
+
+				//TODO refactorizar esto, no me gusta el efecto, es confuso por el nombre
+
 				/* Hay que agregar a la nueva cola lo proximo que use el KLT */
 				this.checkKLTNextRequirement(previousUsage.klt);
 			}
@@ -92,6 +125,10 @@ class FIFO {
 
 	}
 
+	/**
+	 * Verifica cual es la proxima rafaga que va a usar el KLT y lo agrega a la cola de ese dispotivo
+	 * @param  {KLT} KLT
+	 */
 	checkKLTNextRequirement(KLT){
 
 		var resource = KLT.getNextResource();
@@ -113,6 +150,11 @@ class FIFO {
 
 	}
 
+	/**
+	 * Planifica las tareas dadas
+	 * @param  {Array} queue tareas a planificar
+	 * @return {Array}       tareas planificadas
+	 */
 	schedule(queue){
 
 		this.output = Output.createInitialQueue(queue); //La salida estandar
