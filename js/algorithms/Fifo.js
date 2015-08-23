@@ -5,7 +5,7 @@ var KLTModel = require('./Commons/KLT');
 
 class FIFO {
 
-	
+
 	checkUltsSize(queue){
 		var ults = queue.some( task => {
 			return task.ULTs.length > 1;
@@ -52,7 +52,7 @@ class FIFO {
 		console.log('---> Asignando: ', device);
 
 		if(this.currentUsage[device] !== undefined){
-			console.log('\t El dispositivo ' + device + ' se encuentra ocupado por: ', this.currentUsage[device].klt.id);
+			console.log('\t El dispositivo ' + device + ' se encuentra ocupado por: ', this.currentUsage[device].klt.getId());
 			return;
 		}
 
@@ -83,7 +83,7 @@ class FIFO {
 		var givenQuantum = this.getQuantumFor(assignedResource, KLT);
 		var ult_id = KLT.giveResource(device, givenQuantum);
 
-		console.log('\t Asignado por ' + givenQuantum + ' quantums a: ', KLT);
+		console.log('\t Asignado por ' + givenQuantum + ' quantums a: ', KLT.getId());
 		/* Le asina el recurso por el tiempo que lo necesite (en FIFO todo el quantum) */
 		this.currentUsage[assignedResource.device] = { klt: KLT, ends: this.currentTime + givenQuantum };
 
@@ -93,7 +93,7 @@ class FIFO {
 			klt_id: KLT.getId(),
 			ult_id: ult_id,
 			from: this.currentTime,
-			quantum: assignedResource.quantum,
+			quantum: givenQuantum,
 			device: device
 		});
 
