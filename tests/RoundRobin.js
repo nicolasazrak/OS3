@@ -66,7 +66,11 @@ describe('RoundRobinTest', function () {
             }
         ];
 
-        RoundRobin.schedule(newQueue).should.be.eql(result);
+        RoundRobin.schedule(newQueue, {
+            quantum: {
+                cpu: 2
+            }
+        }).should.be.eql(result);
 
     });
 });

@@ -20,5 +20,5 @@ Para ejecutar los tests, se necesita mocha. Pueden ejecutarse con:
 
 ```
 npm install -g mocha
-npm run tests
+npm run test
 ```
