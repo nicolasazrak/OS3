@@ -1,6 +1,4 @@
-[![Build Status](https://travis-ci.org/nicolasazrak/OS3.svg?branch=master)](https://travis-ci.org/nicolasazrak/OS3)
-
-# OS3
+# OS3 [![Build Status](https://travis-ci.org/nicolasazrak/OS3.svg?branch=master)](https://travis-ci.org/nicolasazrak/OS3)
 
 Operating System Scheduler Simulator
 
