@@ -54,7 +54,7 @@ module.exports = {
 		outputArray.forEach(function(ult){
 			for(var i = 0; i < length; i++){
 				if(ult.result[i] === undefined){
-					ult.result[i] = '';
+					ult.result[i] = null;
 				}
 			}
 		});

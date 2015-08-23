@@ -1,11 +1,11 @@
 'use strict';
 var Output = require('./Commons/Output');
+var Fifo = require('./Fifo');
 
-module.exports = class RoundRobbin {
+module.exports = class RoundRobbin extends Fifo {
 
-	schedule(queue){
-		alert('El algoritmo todavía no esta implementado');
-		return Output.createInitialQueue(queue);
+	getQuantumFor(resource, KLT){
+		return (resource.left > 3) ? 3 : resource.left;
 	}
 
 };

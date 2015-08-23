@@ -4,9 +4,10 @@
   "description": "Operating System Scheduler Simulator",
   "main": "js/app.js",
   "scripts": {
-    "test": "jasmine-node spec",
+    "tests": "mocha tests --compilers js:babel/register",
     "watch": "watchify -o dist/bundle.js -v -d .",
-    "build": "browserify . | uglifyjs -cm > dist/bundle.min.js"
+    "build": "browserify . | uglifyjs -cm > dist/bundle.min.js",
+    "browser-sync": "browser-sync start --server --files 'js/**.js'"
   },
   "repository": {
     "type": "git",
@@ -22,7 +23,6 @@
     "babelify": "^6.1.2",
     "browserify": "^10.2.4",
     "envify": "^3.4.0",
-    "jasmine-node": "^1.14.5",
     "react": "^0.13.3",
     "reflux": "^0.2.8",
     "uglify-js": "^2.4.23",
@@ -33,5 +33,9 @@
       "babelify",
       "envify"
     ]
+  },
+  "devDependencies": {
+    "babel": "^5.8.20",
+    "should": "^7.0.2"
   }
 }
