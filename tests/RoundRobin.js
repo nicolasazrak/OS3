@@ -9,7 +9,7 @@ describe('RoundRobinTest', function () {
         //Silent console messages
         console.log = function(){};
     }),*/
-/* q = 2
+
     it("[Example] Test 1", function () {
 
         var RoundRobin = new roundrobin();
@@ -56,7 +56,7 @@ describe('RoundRobinTest', function () {
                 description: 'KLT 1/ULT 1',
                 klt_id: 1,
                 ult_id: 1,
-                result: [null, 'cpu', 'cpu', null, 'cpu', null, null, null, null, null, null, null, null, 'io', 'io', 'io', 'io', 'io', 'cpu', 'cpu', 'cpu', 'cpu', 'cpu', null, null, null, null, 'io', 'io', 'io', 'io', 'io', 'io', 'io', 'io' ]
+                result: [null, 'cpu', 'cpu', null, 'cpu', null, null, null, null, null, null, null, null, 'io', 'io', 'io', 'io', 'io', null, 'cpu', 'cpu', 'cpu', 'cpu', 'cpu', null, null, null, 'io', 'io', 'io', 'io', 'io', 'io', 'io', 'io' ]
             },
             {
                 description: 'KLT 2/ULT 1',
@@ -68,5 +68,5 @@ describe('RoundRobinTest', function () {
 
         RoundRobin.schedule(newQueue).should.be.eql(result);
 
-    });*/
+    });
 });

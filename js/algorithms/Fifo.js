@@ -153,10 +153,12 @@ class FIFO {
 	/**
 	 * Planifica las tareas dadas
 	 * @param  {Array} queue tareas a planificar
+	 * @param  {object} options
 	 * @return {Array}       tareas planificadas
 	 */
-	schedule(queue){
+	schedule(queue, options){
 
+		this.options = options;
 		this.output = Output.createInitialQueue(queue); //La salida estandar
 		this.currentTime = 0;  //El reloj que dice en que momento esta
 		this.currentUsage = {}; //Dice para cada dispositivo si se esta usando, quien y hasta cuando.
