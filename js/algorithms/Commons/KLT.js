@@ -47,7 +47,8 @@ module.exports = class KLT {
 		this.data.ULTs[0].bursts.forEach(burst => {
 			if(burst.left > 0 && !foundBurst){
 				if(burst.device != resource){
-					throw 'Se le dio un recurso innecesario';
+					console.error(this.data.ULTs[0].bursts);
+					throw new Error('Se le intento asignar ' + resource + ' cuando en realidad necesitaba ' + burst.device + ' en el momento ' + time);
 				}
 				foundBurst = true;
 				burst.left -= time;
