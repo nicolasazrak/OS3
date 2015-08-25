@@ -1,16 +1,13 @@
 var Reflux 		= require('reflux');
-var Actions 	= require('../actions/Actions')
+var Actions 	= require('../actions/Actions');
 
 var TasksStore	= require('./TasksStore');
 
-var Fake		= require('../algorithms/FakeScheduler');
 var Fifo 		= require('../algorithms/Fifo');
 var RoundRobin  = require('../algorithms/RoundRobin');
 var SJF 		= require('../algorithms/SJF');
 
-
 var __results 	= null;
-
 
 var ResultsStore = Reflux.createStore({
 
@@ -20,7 +17,6 @@ var ResultsStore = Reflux.createStore({
 
 	getAlgorithms: function(){
 		return [
-			{ description: 'Fake', algorithm: Fake },
 			{ description: 'Fifo', algorithm: Fifo },
 			{ description: 'Round Robin', algorithm: RoundRobin },
 			{ description: 'SJF', algorithm: SJF },
