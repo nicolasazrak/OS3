@@ -83,7 +83,7 @@ class FIFO {
 		var givenQuantum = this.getQuantumFor(assignedResource, KLT);
 		var ult_id = KLT.giveResource(device, givenQuantum);
 
-		console.log('\t Asignado por ' + givenQuantum + ' quantums a: ', KLT.getId());
+		console.log('\t Asignado por ' + givenQuantum + ' quantums a: ', KLT);
 		/* Le asina el recurso por el tiempo que lo necesite (en FIFO todo el quantum) */
 		this.currentUsage[assignedResource.device] = { klt: KLT, ends: this.currentTime + givenQuantum };
 
@@ -192,12 +192,10 @@ class FIFO {
 				this.assignIfPossible(device2);
 			}
 
-
-
 			/* Aumenta el reloj */
 			this.currentTime++;
 
-			if(this.currentTime > 50){
+			if(this.currentTime > 200){
 				/* Es para evitar los loops infinitos no deberia estar */
 				console.error('Se corto por el loop infinito');
 				return Output.completeEmptys(this.output);
