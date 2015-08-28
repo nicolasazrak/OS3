@@ -4,7 +4,7 @@ var TestData 	= require('../utils/TestData');
 
 var __klts = TestData.tasksWithoutUlts;
 
-var idCounter = 1;
+var idCounter = 10;
 var __useUlts = false;
 
 var TasksStore = Reflux.createStore({
@@ -18,8 +18,9 @@ var TasksStore = Reflux.createStore({
 	},
 
 	addKLT: function(){
+		var id = idCounter++ ;
 		var newKLT = {
-			id: idCounter++,
+			id: id,
 			ULTs: []
 		};
 		this.addULT(newKLT);

@@ -16,6 +16,7 @@ module.exports = {
 			klt.getSubTasks().forEach( ult => {
 
 				if(ids.indexOf(ult.id) !== -1){
+					console.error(tasks);
 					throw new Error('Error creating output, repeated id: ' + ult.id);
 				}
 
@@ -26,7 +27,7 @@ module.exports = {
 					description: ult.description,
 					result: []
 				});
-				
+
 			});
 		});
 		return initialOutput;

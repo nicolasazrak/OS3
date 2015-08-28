@@ -10,7 +10,9 @@ var ULT				= require('../js/algorithms/Commons/ULT');
  * Debe planificar los ULTs de la misma forma que un KLT
  * no deberia haber diferencias por el hecho que son polimorficos
  */
-describe('Checking ULTs scheduling as KLT', () => {
+var fakeLogger = {log: () => {}, info: () => {}};
+
+describe('Checking ULTs scheduling', () => {
 
 	it('should schedule ULTs with Fifo', () => {
 
@@ -23,7 +25,7 @@ describe('Checking ULTs scheduling as KLT', () => {
 					{ device: 'cpu', quantum: 3 },
 					{ device: 'io',  quantum: 5 },
 					{ device: 'cpu', quantum: 5 },
-					{ device: 'io',  quantum: 8 }
+					{ device: 'io',  quantum: 2 }
 				]
 			},
 			{
@@ -32,9 +34,9 @@ describe('Checking ULTs scheduling as KLT', () => {
 				start: 2,
 				bursts: [
 					{ device: 'cpu', quantum: 1 },
-					{ device: 'io',  quantum: 9 },
+					{ device: 'io',  quantum: 5 },
 					{ device: 'cpu', quantum: 6 },
-					{ device: 'io',  quantum: 8 }
+					{ device: 'io',  quantum: 4 }
 				]
 			}
 		];
@@ -43,17 +45,19 @@ describe('Checking ULTs scheduling as KLT', () => {
 			{
                 id: 1,
                 description: 'KLT 1/ULT 1',
-                result: [null, 'cpu', 'cpu', 'cpu', 'io', 'io', 'io', 'io', 'io', 'cpu', 'cpu', 'cpu', 'cpu', 'cpu', null, null, null, null, 'io', 'io', 'io', 'io', 'io', 'io', 'io', 'io', null, null, null, null, null, null, null, null ]
+                result: [null, 'cpu', 'cpu', 'cpu', null, 'io', 'io', 'io', 'io', 'io', 'cpu', 'cpu', 'cpu', 'cpu', 'cpu', null, null, null, null, null, null, null, null, null, null, null, 'io', 'io', null, null, null, null]
             },
             {
                 id: 2,
                 description: 'KLT 2/ULT 1',
-                result: [null, null, null, null, 'cpu', null, null, null, null, 'io', 'io', 'io', 'io', 'io', 'io', 'io', 'io', 'io', 'cpu', 'cpu', 'cpu', 'cpu', 'cpu', 'cpu', null, null, 'io', 'io', 'io', 'io', 'io', 'io', 'io', 'io']
+                result: [null, null, null, null, 'cpu', null, null, null, null, null, null, null, null, null, null, 'io', 'io', 'io', 'io', 'io', 'cpu', 'cpu', 'cpu', 'cpu', 'cpu', 'cpu', null, null, 'io', 'io', 'io', 'io']
             }
 		];
 
 		ults = ults.map( ult => new ULT(ult) );
-		new Fifo({log: () => {}}).schedule(ults).should.be.eql(results);
+		new Fifo(fakeLogger).schedule(ults, {
+			ultMode: true
+		}).should.be.eql(results);
 
 	})
 
@@ -66,8 +70,8 @@ describe('Checking ULTs scheduling as KLT', () => {
 				start: 0,
 				bursts: [
 					{ device: 'cpu', quantum: 4 },
-					{ device: 'io',  quantum: 3 },
-					{ device: 'cpu', quantum: 2 },
+					{ device: 'io',  quantum: 5 },
+					{ device: 'cpu', quantum: 5 },
 				]
 			},
 			{
@@ -86,20 +90,21 @@ describe('Checking ULTs scheduling as KLT', () => {
 			{
 				id: 1,
 				description: 'KLT 1/ULT 1',
-				result: ['cpu', 'cpu', 'cpu', null, 'cpu', null, null, null, null, 'io', 'io', 'io', null, 'cpu', 'cpu']
+				result: ['cpu', 'cpu', 'cpu', null, 'cpu', null, null, null, null, null, null, null, null, null, 'io', 'io', 'io', 'io', 'io', 'cpu', 'cpu', 'cpu','cpu', 'cpu']
 			},
 			{
 				id: 2,
 				description: 'KLT 2/ULT 1',
-				result: [null, null, null, 'cpu', 'io', 'io', 'io', 'io', 'io', 'cpu', 'cpu', 'cpu', 'cpu', null, null]
+				result: [null, null, null, 'cpu', null, 'io', 'io', 'io', 'io', 'io', 'cpu', 'cpu', 'cpu', 'cpu', null, null, null, null, null, null, null, null, null, null]
 			}
 		];
 
 		ults = ults.map( ult => new ULT(ult) );
-		new RoundRobin({log: () => {}}).schedule(ults, {
+		new RoundRobin(fakeLogger).schedule(ults, {
 			quantum: {
 				cpu: 3
-			}
+			},
+			ultMode: true
 		}).should.be.eql(results);
 
 	})
@@ -113,9 +118,9 @@ describe('Checking ULTs scheduling as KLT', () => {
 				description: 'KLT 1/ULT 1',
 				start: 0,
 				bursts: [
-					{ device: 'cpu', quantum: 3 },
-					{ device: 'io',  quantum: 3 },
-					{ device: 'cpu', quantum: 2 },
+					{ device: 'cpu', quantum: 4 },
+					{ device: 'io',  quantum: 5 },
+					{ device: 'cpu', quantum: 5 },
 				]
 			},
 			{
@@ -134,17 +139,19 @@ describe('Checking ULTs scheduling as KLT', () => {
 			{
 				id: 1,
 				description: 'KLT 1/ULT 1',
-				result: [null, 'cpu', 'cpu', 'cpu', null, null, 'io', 'io', 'io', null, 'cpu', 'cpu']
+				result: [null, 'cpu', 'cpu', 'cpu', 'cpu', null, null, null, null, null, null, null, null, null, 'io', 'io', 'io', 'io', 'io', 'cpu', 'cpu',  'cpu', 'cpu', 'cpu']
 			},
 			{
 				id: 2,
 				description: 'KLT 2/ULT 1',
-				result: ['cpu', 'io', 'io', 'io', 'io', 'io', 'cpu', 'cpu', 'cpu', 'cpu', null, null]
+				result: ['cpu', null, null, null, null, 'io', 'io', 'io', 'io', 'io', 'cpu', 'cpu', 'cpu', 'cpu', null, null, null, null, null, null, null, null, null, null]
 			}
 		];
 
 		ults = ults.map( ult => new ULT(ult) );
-		new SJF({log: () => {}}).schedule(ults).should.be.eql(results);
+		new SJF(fakeLogger).schedule(ults, {
+			ultMode: true
+		}).should.be.eql(results);
 
 	})
 

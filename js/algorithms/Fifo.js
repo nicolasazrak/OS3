@@ -1,7 +1,7 @@
 'use strict';
 
-var Output = require('./Commons/Output');
-var KLTModel = require('./Commons/KLT');
+var Output		= require('./Commons/Output');
+var KLTModel	= require('./Commons/KLT');
 
 class FIFO {
 
@@ -38,6 +38,19 @@ class FIFO {
 	}
 
 	/**
+	 * Devuelve si en ese instante hay algo mas siendo ejecutado para cualquier dispositivo
+	 * @return {Boolean} [description]
+	 */
+	isAnythingBeingExecuted(){
+		for(var device in this.currentUsage){
+			if(this.currentUsage[device] !== undefined){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Verifica si el dispositivo puede ser asignado a alguien, si se puede, se lo asigna
 	 * @param  {string} device Dispositivo, ej: CPU/IO
 	 */
@@ -54,9 +67,18 @@ class FIFO {
 		/* Hay alguien en la cola esperando */
 		if(this.devicesQueue.hasOwnProperty(device) && this.devicesQueue[device].length > 0){
 
-			/* Saca el proximo dispositivo de la cola y le asigna el recurso */
-			var KLT = this.chooseKLTFor(device);
-			this.assignResourceTo(KLT, device);
+			//En caso que este en ultMode chequea si hay algo mas siendo ejecutado al mismo tiempo
+			//Cosa que no puede pasar si planificamos ults, no puede haber IO al mismo tiempo que cpu
+			if(!this.ultMode || !this.isAnythingBeingExecuted()){
+
+				/* Saca el proximo dispositivo de la cola y le asigna el recurso */
+				var KLT = this.chooseKLTFor(device);
+				this.assignResourceTo(KLT, device);
+
+			}else{
+				this.logger.log('\t El dispotivo esta libre pero ya hay alguien mas ejecutando, esperando...');
+			}
+
 
 		}else{
 			this.logger.log('\t No hay nadie esperando por el dispositivo');
@@ -149,7 +171,11 @@ class FIFO {
 	 */
 	schedule(queue, options){
 
-		this.options = options;
+		this.options = options || {};
+
+		//Significa si se puede ejecutar cpu al mismo tiempo que io,
+		//Si es true, cada vez que se intente asignar un recurso hay que chequear que nadie mas este ejecutando nada
+		this.ultMode = this.options.ultMode || false;
 		this.output = Output.createInitialQueue(queue); //La salida estandar
 		this.currentTime = 0;  //El reloj que dice en que momento esta
 		this.currentUsage = {}; //Dice para cada dispositivo si se esta usando, quien y hasta cuando.
@@ -157,7 +183,7 @@ class FIFO {
 
 		do {
 
-			this.logger.log('-----------------------------------------------------------------');
+			this.logger.log('----------------------------------------------------------------------------');
 			this.logger.log('Inicia el instante ' + this.currentTime);
 
 			/* Revisa cada dispositivo a ver si alguno se libero para agregarlo a la cola */
