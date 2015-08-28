@@ -6,8 +6,11 @@ var RoundRobin    	= require('../js/algorithms/RoundRobin');
 var SJF				= require('../js/algorithms/SJF');
 var ULT				= require('../js/algorithms/Commons/ULT');
 
-
-describe('Checking ULTs scheduling ', () => {
+/**
+ * Debe planificar los ULTs de la misma forma que un KLT
+ * no deberia haber diferencias por el hecho que son polimorficos
+ */
+describe('Checking ULTs scheduling as KLT', () => {
 
 	it('should schedule ULTs with Fifo', () => {
 
