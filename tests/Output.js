@@ -1,16 +1,16 @@
-var fifo    = require('../js/algorithms/Fifo');
 var should  = require('should');
 var KLT     = require('../js/algorithms/Commons/KLT');
+var Output 	= require('../js/algorithms/Commons/Output');
 
-describe('FifoTest', function () {
 
-    it("[Example] Test 1", function () {
+describe('Common Output', function () {
 
-        var Fifo = new fifo({log: () => {}});
+    it("shoud create output for KLT", function () {
 
-        var newQueue = [
-            {
+		var newQueue = [
+            new KLT({
                 id: 1,
+                ultCounter: 2,
                 ULTs: [
                     {
                         id: 2,
@@ -24,9 +24,10 @@ describe('FifoTest', function () {
                         ]
                     }
                 ]
-            },
-            {
+            }),
+            new KLT({
                 id: 3,
+                ultCounter: 3,
                 ULTs: [
                     {
                         id: 4,
@@ -40,25 +41,24 @@ describe('FifoTest', function () {
                         ]
                     }
                 ]
-            },
+            }),
         ];
 
-        var result =  [
-            {
-                description: 'KLT 1/ULT 1',
-                id: 2,
-                result: [null, 'cpu', 'cpu', 'cpu', 'io', 'io', 'io', 'io', 'io', 'cpu', 'cpu', 'cpu', 'cpu', 'cpu', null, null, null, null, 'io', 'io', 'io', 'io', 'io', 'io', 'io', 'io', null, null, null, null, null, null, null, null ]
-            },
-            {
-                description: 'KLT 2/ULT 1',
-                id: 4,
-                result: [null, null, null, null, 'cpu', null, null, null, null, 'io', 'io', 'io', 'io', 'io', 'io', 'io', 'io', 'io', 'cpu', 'cpu', 'cpu', 'cpu', 'cpu', 'cpu', null, null, 'io', 'io', 'io', 'io', 'io', 'io', 'io', 'io']
-            }
-        ];
 
-        newQueue = newQueue.map( klt => new KLT(klt) );
-
-        Fifo.schedule(newQueue).should.be.eql(result);
+		Output.createInitialQueue(newQueue).should.be.eql(
+			[
+				{
+					id: 2,
+					description: 'KLT 1/ULT 1',
+					result: []
+				},
+				{
+					id: 4,
+					description: 'KLT 2/ULT 1',
+					result: []
+				}
+			]
+		);
 
     });
 });

@@ -5,16 +5,10 @@ var KLTModel = require('./Commons/KLT');
 
 class FIFO {
 
-
-	checkUltsSize(queue){
-		var ults = queue.some( task => {
-			return task.ULTs.length > 1;
-		});
-
-		if(ults){
-			throw 'El algoritmo todavía no soporta ULTs';
-		}
+	constructor(logger){
+		this.logger = logger || console;
 	}
+
 
 	/**
 	 * Devuelve cual es el proximo KLT para ejecutar el dispositivo
@@ -49,10 +43,10 @@ class FIFO {
 	 */
 	assignIfPossible(device){
 
-		console.log('---> Asignando: ', device);
+		this.logger.log('---> Asignando: ', device);
 
 		if(this.currentUsage[device] !== undefined){
-			console.log('\t El dispositivo ' + device + ' se encuentra ocupado por: ', this.currentUsage[device].klt.getId());
+			this.logger.log('\t El dispositivo ' + device + ' se encuentra ocupado por: ', this.currentUsage[device].klt.getId());
 			return;
 		}
 
@@ -65,7 +59,7 @@ class FIFO {
 			this.assignResourceTo(KLT, device);
 
 		}else{
-			console.log('\t No hay nadie esperando por el dispositivo');
+			this.logger.log('\t No hay nadie esperando por el dispositivo');
 		}
 
 	}
@@ -81,17 +75,16 @@ class FIFO {
 
 		/* Entonces se le da el recurso a ese KLT */
 		var givenQuantum = this.getQuantumFor(assignedResource, KLT);
-		var ult_id = KLT.giveResource(device, givenQuantum);
+		var id = KLT.giveResource(device, givenQuantum);
 
-		console.log('\t Asignado por ' + givenQuantum + ' quantums a: ', KLT);
+		this.logger.log('\t Asignado por ' + givenQuantum + ' quantums a: ', KLT);
 		/* Le asina el recurso por el tiempo que lo necesite (en FIFO todo el quantum) */
 		this.currentUsage[assignedResource.device] = { klt: KLT, ends: this.currentTime + givenQuantum };
 
 		/* Agrega a la salida que ese KLT se ejecuto en ese momento */
 		Output.addUsageToOutput({
 			output: this.output,
-			klt_id: KLT.getId(),
-			ult_id: ult_id,
+			id: id,
 			from: this.currentTime,
 			quantum: givenQuantum,
 			device: device
@@ -108,7 +101,7 @@ class FIFO {
 		/* Se le termino el tiempo del quantum (o no habia nada ejecutando ) */
 		if(this.currentUsage[device] === undefined || this.currentUsage[device].ends === this.currentTime){
 
-			console.log('Se libero: ' + device + ', estaba siendo usado por: ', this.currentUsage[device]);
+			this.logger.log('Se libero: ' + device + ', estaba siendo usado por: ', this.currentUsage[device]);
 			var previousUsage = this.currentUsage[device];
 
 			if(previousUsage !== undefined){
@@ -132,11 +125,9 @@ class FIFO {
 	checkKLTNextRequirement(KLT){
 
 		var resource = KLT.getNextResource();
-		if(resource === undefined){
-			return;
-		}
+		if(resource === undefined) return;
 
-		console.log('El KLT id ' + KLT.getId() + ' necesita: ', resource);
+		this.logger.log('El KLT id ' + KLT.getId() + ' necesita: ', resource);
 
 		/* Crea la cola para el dispositivo */
 		if(!this.devicesQueue.hasOwnProperty(resource.device)){
@@ -146,7 +137,7 @@ class FIFO {
 		/* Agrega el KLT a la cola del recurso que necesita */
 		this.devicesQueue[resource.device].push(KLT);
 
-		console.log('La cola de ' + resource.device + ' ahora es: ', this.devicesQueue);
+		this.logger.log('La cola de ' + resource.device + ' ahora es: ', this.devicesQueue);
 
 	}
 
@@ -164,16 +155,10 @@ class FIFO {
 		this.currentUsage = {}; //Dice para cada dispositivo si se esta usando, quien y hasta cuando.
 		this.devicesQueue = {}; //Es la cola para cada dispositivo, tiene los que estan esperando por eso
 
-		this.checkUltsSize(queue);
-
-		/* TODO clonar de una forma mas linda */
-		/* El JSON.stringify ... es una forma muuy fea de clonar un objeto */
-		queue = queue.map( k => new KLTModel(JSON.parse(JSON.stringify(k))) );
-
 		do {
 
-			console.log('-----------------------------------------------------------------');
-			console.log('Inicia el instante ' + this.currentTime);
+			this.logger.log('-----------------------------------------------------------------');
+			this.logger.log('Inicia el instante ' + this.currentTime);
 
 			/* Revisa cada dispositivo a ver si alguno se libero para agregarlo a la cola */
 			for(var device in this.devicesQueue){
@@ -181,7 +166,7 @@ class FIFO {
 			}
 
 			var newQueue = queue.filter(KLT => this.currentTime == KLT.getStartTime());
-			console.log('Llegaron los procesos: ', newQueue.map(k => k.getId()));
+			this.logger.log('Llegaron los procesos: ', newQueue.map(k => k.getId()));
 
 			/* Procesamos los nuevos threads */
 			/* Y verificamos que es lo que necesita */
@@ -196,7 +181,7 @@ class FIFO {
 			this.currentTime++;
 
 			if(this.currentTime > 200){
-				/* Es para evitar los loops infinitos no deberia estar */
+				/* Es para evitar los loops infinitos, no deberia estar */
 				console.error('Se corto por el loop infinito');
 				return Output.completeEmptys(this.output);
 			}

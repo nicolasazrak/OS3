@@ -8,7 +8,7 @@ var ResultTable = React.createClass({
 
 	getResultsRows: function(){
 		return this.state.results.map( result => {
-			return <ResultRow key={result.klt_id.toString() + result.ult_id.toString()} data={result} />
+			return <ResultRow key={result.id.toString() + result.id.toString()} data={result} />
 		} );
 	},
 

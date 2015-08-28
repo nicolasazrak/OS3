@@ -6,19 +6,27 @@ module.exports = {
 
 	/**
 	* Dados los tasks iniciales genera un array del estilo de output
-	* @param array tasks iniciales
-	* @return array
+	* @param {Array} tasks iniciales
+	* @return {Array}
 	*/
 	createInitialQueue: function(tasks){
 		var initialOutput = [];
+		var ids = [];
 		tasks.forEach( klt => {
-			klt.ULTs.forEach( ult => {
+			klt.getSubTasks().forEach( ult => {
+
+				if(ids.indexOf(ult.id) !== -1){
+					throw new Error('Error creating output, repeated id: ' + ult.id);
+				}
+
+				ids.push(ult.id);
+
 				initialOutput.push({
-					klt_id: klt.id,
-					ult_id: ult.id,
+					id: ult.id,
 					description: ult.description,
 					result: []
 				});
+				
 			});
 		});
 		return initialOutput;
@@ -27,16 +35,15 @@ module.exports = {
 
 	/**
 	* Le agrega el uso de un dispositivo a la cola a un ult recibe params con los valores
-	* @param array el array del estilo creado por createInitialQueue
-	* @param klt_id el klt a matchear
-	* @param ult_id el ult a matchear
-	* @param from tiempo desde el que thread usa el dispositivo
-	* @param duration la cantidad de tiempo que el thread usa el dispositivo
-	* @param string el dispositivo a usar, ej: cpu, io, ...
+	* @param {Array} el array del estilo creado por createInitialQueue
+	* @param {number} id el klt a matchear
+	* @param {number} from tiempo desde el que thread usa el dispositivo
+	* @param {number} duration la cantidad de tiempo que el thread usa el dispositivo
+	* @param {string} el dispositivo a usar, ej: cpu, io, ...
 	*/
 	addUsageToOutput: function(usage){
 		usage.output.forEach(function(ult){
-			if(ult.ult_id === usage.ult_id && ult.klt_id === usage.klt_id){
+			if(ult.id === usage.id){
 				for(var i = 0; i < usage.quantum; i++){
 					ult.result[usage.from + i] = usage.device;
 				}
@@ -46,6 +53,7 @@ module.exports = {
 
 	/**
 	* Completa los tiempos vacios
+	* @param {Array}
 	*/
 	completeEmptys: function(outputArray){
 		var length = outputArray.reduce(function(a, ult){

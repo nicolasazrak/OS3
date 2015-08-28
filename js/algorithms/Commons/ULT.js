@@ -1,8 +1,6 @@
 'use strict';
 
-var ULT = require('./ULT');
-
-class KLT {
+class ULT {
 
 	constructor(data) {
 
@@ -10,29 +8,34 @@ class KLT {
 			this[key] = data[key];
 		}
 
-		this.ULTs = this.ULTs.map(ult => new ULT(ult));
+		this.bursts.forEach( burst => {
+			burst.left = burst.quantum;
+		});
+
+		this.hasEnded();
 
 	}
 
 	/* Deberia tener una estrategia para ver cual usar depende cual sea el algoritmo para los ults */
 	/* Por ahora solamente voy a pensar el caso que tenga un 1 ULT */
 	getNextResource(){
-		return this.ULTs[0].getNextResource();
+		var leftBursts = this.bursts.filter(b => b.left > 0);
+		if(leftBursts.length === 0)	return;
+		return leftBursts[0];
 	}
 
 	/**
-	 * Devuelve los ults, esta pensado para que el output pueda ser polimorfico con los ULTs
-	 * Para que sea más claro fijarse que en ULT existe el mismo metodo y devuelve a si mismo
 	 * @return {Array}
 	 */
 	getSubTasks(){
-		return this.ULTs;
+		return [this];
 	}
 
 	/* Devuelta, esto es para cuando hay mas de un ULT, todavia no esta hecho */
 	getStartTime(){
-		return this.ULTs[0].getStartTime();
+		return this.start;
 	}
+
 
 	getId(){
 		return this.id;
@@ -45,18 +48,29 @@ class KLT {
 	* @return {number} el ULT que lo ejecuto
 	*/
 	giveResource(resource, time){
-		this.ULTs[0].giveResource(resource, time);
-		return this.ULTs[0].id;
+		var foundBurst = false;
+		this.bursts.forEach(burst => {
+			if(burst.left > 0 && !foundBurst){
+				if(burst.device != resource){
+					throw new Error('Se le intento asignar ' + resource + ' cuando en realidad necesitaba ' + burst.device + ' en el momento ' + time);
+				}
+				foundBurst = true;
+				burst.left -= time;
+			}
+		}, this);
+
+		return this.id;
 	}
 
 	/**
 	* Devuelve si el proceso ya termino
 	* Termino si todas sus rafagas ya se ejecutaron
+	* @return {boolean}
 	*/
 	hasEnded(){
-		return this.ULTs.every( ult => ult.hasEnded() );
+		return this.bursts.every(b => b.left === 0);
 	}
 
-};
+}
 
-module.exports = KLT;
+module.exports = ULT;

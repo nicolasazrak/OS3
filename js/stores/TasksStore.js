@@ -4,7 +4,7 @@ var TestData 	= require('../utils/TestData');
 
 var __klts = TestData.tasksWithoutUlts;
 
-var kltCounter = 3;
+var idCounter = 1;
 var __useUlts = false;
 
 var TasksStore = Reflux.createStore({
@@ -18,10 +18,8 @@ var TasksStore = Reflux.createStore({
 	},
 
 	addKLT: function(){
-		var id = kltCounter++;
 		var newKLT = {
-			id: id,
-			ultCounter: 0,
+			id: idCounter++,
 			ULTs: []
 		};
 		this.addULT(newKLT);
@@ -30,11 +28,11 @@ var TasksStore = Reflux.createStore({
 	},
 
 	addULT: function(klt){
-		klt.ultCounter++;
+		var id = idCounter++;
 
 		var newULT = {
-			id: klt.ultCounter,
-			description: 'KLT '+klt.id+'/ ULT ' + klt.ultCounter,
+			id: idCounter,
+			description: 'KLT '+klt.id+'/ ULT ' + idCounter,
 			start: 0,
 			bursts: [
 				{ device: 'cpu', quantum: Math.floor(Math.random() * 5 + 1) },
