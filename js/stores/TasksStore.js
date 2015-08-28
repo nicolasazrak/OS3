@@ -31,8 +31,8 @@ var TasksStore = Reflux.createStore({
 		var id = idCounter++;
 
 		var newULT = {
-			id: idCounter,
-			description: 'KLT '+klt.id+'/ ULT ' + idCounter,
+			id: id,
+			description: 'KLT '+klt.id+'/ ULT ' + id,
 			start: 0,
 			bursts: [
 				{ device: 'cpu', quantum: Math.floor(Math.random() * 5 + 1) },
