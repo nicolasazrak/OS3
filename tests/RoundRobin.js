@@ -1,18 +1,13 @@
-var assert  = require("assert");
-var roundrobin    = require('../js/algorithms/RoundRobin');
-var should  = require('should');
-
+var assert          = require("assert");
+var roundrobin      = require('../js/algorithms/RoundRobin');
+var should          = require('should');
+var KLT     = require('../js/algorithms/Commons/KLT');
 
 describe('RoundRobinTest', function () {
 
-    /*before(function(){
-        //Silent console messages
-        console.log = function(){};
-    }),*/
-
     it("[Example] Test 1", function () {
 
-        var RoundRobin = new roundrobin();
+        var RoundRobin = new roundrobin({log: () => {}});
 
         var newQueue = [
             {
@@ -37,7 +32,7 @@ describe('RoundRobinTest', function () {
                 ultCounter: 3,
                 ULTs: [
                     {
-                        id: 1,
+                        id: 2,
                         description: 'KLT 2/ULT 1',
                         start: 2,
                         bursts: [
@@ -53,24 +48,25 @@ describe('RoundRobinTest', function () {
 
         var result =  [
             {
+                id: 1,
                 description: 'KLT 1/ULT 1',
-                klt_id: 1,
-                ult_id: 1,
                 result: [null, 'cpu', 'cpu', null, 'cpu', null, null, null, null, null, null, null, null, 'io', 'io', 'io', 'io', 'io', null, 'cpu', 'cpu', 'cpu', 'cpu', 'cpu', null, null, null, 'io', 'io', 'io', 'io', 'io', 'io', 'io', 'io' ]
             },
             {
+                id: 2,
                 description: 'KLT 2/ULT 1',
-                klt_id: 2,
-                ult_id: 1,
                 result: [null, null, null, 'cpu', 'io', 'io', 'io', 'io', 'io', 'io', 'io', 'io', 'io', 'cpu', 'cpu', 'cpu', 'cpu', 'cpu', 'cpu', 'io', 'io', 'io', 'io', 'io', 'io', 'io', 'io', null, null, null, null, null, null, null, null ]
             }
         ];
+
+        newQueue = newQueue.map( klt => new KLT(klt) );
 
         RoundRobin.schedule(newQueue, {
             quantum: {
                 cpu: 2
             }
         }).should.be.eql(result);
+
 
     });
 });

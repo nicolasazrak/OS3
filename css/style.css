@@ -12,42 +12,6 @@
 	min-width: 140px;
 }
 
-
-/* Results */
-
-div.result-table {
-    width: 960px;
-    overflow-x: scroll;
-    margin-bottom: 5em;
-}
-
-
-.table-results tbody td {
-	height: 40px;
-	min-width: 35px;
-}
-
-.table-results tbody td:first-child, .table-results thead th:first-child {
-	min-width: 150px;
-}
-
-.cpu {
-	animation: fadein 2s;
-	-moz-animation: fadein 2s; /* Firefox */
-	-webkit-animation: fadein 2s; /* Safari and Chrome */
-	-o-animation: fadein 2s; /* Opera */
-	background: #DB4B6A;
-}
-
-.io {
-	animation: fadein 2s;
-	-moz-animation: fadein 2s; /* Firefox */
-	-webkit-animation: fadein 2s; /* Safari and Chrome */
-	-o-animation: fadein 2s; /* Opera */
-	background: #653BFF
-}
-
-
 .input-value {
 	width: 70px !important;
 }
@@ -65,4 +29,39 @@ div.result-table {
 
 #div-checkbox {
 	padding-top: 1.9em;
+}
+
+
+
+/* Results */
+
+div.result-table {
+    width: 960px;
+    overflow-x: scroll;
+    margin-bottom: 5em;
+}
+
+.table-results tbody td {
+	height: 40px;
+	min-width: 35px;
+}
+
+.table-results tbody td:first-child,
+.table-results thead th:first-child {
+	min-width: 150px;
+}
+
+.ui.table.table-results tbody td {
+	-webkit-transition: all linear 0.1s; /* Safari and Chrome */
+	-moz-transition: 	all linear 0.1s; /* Firefox */
+	-o-transition: 		all linear 0.1s; /* Opera */
+	transition: 		all linear 0.1s;
+}
+
+.cpu {
+	background: #DB4B6A;
+}
+
+.io {
+	background: #653BFF
 }

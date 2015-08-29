@@ -1,26 +1,19 @@
-var assert  = require("assert");
 var fifo    = require('../js/algorithms/Fifo');
 var should  = require('should');
-
+var KLT     = require('../js/algorithms/Commons/KLT');
 
 describe('FifoTest', function () {
 
-    /*before(function(){
-        //Silent console messages
-        console.log = function(){};
-    }),*/
-
     it("[Example] Test 1", function () {
 
-        var Fifo = new fifo();
+        var Fifo = new fifo({log: () => {}});
 
         var newQueue = [
             {
                 id: 1,
-                ultCounter: 2,
                 ULTs: [
                     {
-                        id: 1,
+                        id: 2,
                         description: 'KLT 1/ULT 1',
                         start: 1,
                         bursts: [
@@ -33,11 +26,10 @@ describe('FifoTest', function () {
                 ]
             },
             {
-                id: 2,
-                ultCounter: 3,
+                id: 3,
                 ULTs: [
                     {
-                        id: 1,
+                        id: 4,
                         description: 'KLT 2/ULT 1',
                         start: 2,
                         bursts: [
@@ -54,17 +46,17 @@ describe('FifoTest', function () {
         var result =  [
             {
                 description: 'KLT 1/ULT 1',
-                klt_id: 1,
-                ult_id: 1,
+                id: 2,
                 result: [null, 'cpu', 'cpu', 'cpu', 'io', 'io', 'io', 'io', 'io', 'cpu', 'cpu', 'cpu', 'cpu', 'cpu', null, null, null, null, 'io', 'io', 'io', 'io', 'io', 'io', 'io', 'io', null, null, null, null, null, null, null, null ]
             },
             {
                 description: 'KLT 2/ULT 1',
-                klt_id: 2,
-                ult_id: 1,
+                id: 4,
                 result: [null, null, null, null, 'cpu', null, null, null, null, 'io', 'io', 'io', 'io', 'io', 'io', 'io', 'io', 'io', 'cpu', 'cpu', 'cpu', 'cpu', 'cpu', 'cpu', null, null, 'io', 'io', 'io', 'io', 'io', 'io', 'io', 'io']
             }
         ];
+
+        newQueue = newQueue.map( klt => new KLT(klt) );
 
         Fifo.schedule(newQueue).should.be.eql(result);
 

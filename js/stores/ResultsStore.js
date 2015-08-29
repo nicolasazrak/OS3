@@ -3,6 +3,8 @@ var Actions 	= require('../actions/Actions');
 
 var TasksStore	= require('./TasksStore');
 
+var KLT			= require('../algorithms/Commons/KLT');
+
 var Fifo 		= require('../algorithms/Fifo');
 var RoundRobin  = require('../algorithms/RoundRobin');
 var SJF 		= require('../algorithms/SJF');
@@ -25,7 +27,8 @@ var ResultsStore = Reflux.createStore({
 
 	generate: function(algorithm, options){
 		var scheduler = new algorithm();
-		__results = scheduler.schedule(TasksStore.getKLTs(), options);
+		var klts = TasksStore.getKLTs().map( klt => new KLT(klt) );
+		__results = scheduler.schedule(klts, options);
 		this.trigger();
 	},
 
