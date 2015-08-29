@@ -2,6 +2,7 @@ var Reflux 			= require('reflux');
 var Actions			= require('../actions/Actions');
 var TestData 		= require('../utils/TestData');
 var ResultsStore	= require('./ResultsStore');
+var algorithmsStore = require('./AlgorithmsStore');
 
 var __klts = TestData.tasksWithoutUlts;
 
@@ -23,7 +24,7 @@ var TasksStore = Reflux.createStore({
 		var id = idCounter++ ;
 		var newKLT = {
 			id: id,
-			algorithm: {description: 'pepe'},
+			algorithm: algorithmsStore.getAlgorithms()[0],
 			ULTs: []
 		};
 		this.addULT(newKLT);
