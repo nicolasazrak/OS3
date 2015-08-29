@@ -28,7 +28,10 @@ var ResultTable = React.createClass({
 	componentDidMount: function(){
 		var self = this;
 		this.unsubscribe = ResultsStore.listen(function(){
-			self.setState( { results: ResultsStore.getResults() } );
+			self.setState( { results: [] });
+			setTimeout(() => {
+				self.setState( { results: ResultsStore.getResults() } );
+			});
 		});
 	},
 
