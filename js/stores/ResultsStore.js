@@ -5,9 +5,7 @@ var TasksStore	= require('./TasksStore');
 
 var KLT			= require('../algorithms/Commons/KLT');
 
-var Fifo 		= require('../algorithms/Fifo');
-var RoundRobin  = require('../algorithms/RoundRobin');
-var SJF 		= require('../algorithms/SJF');
+
 
 var __results 	= null;
 
@@ -18,11 +16,7 @@ var ResultsStore = Reflux.createStore({
 	},
 
 	getAlgorithms: function(){
-		return [
-			{ description: 'Fifo', algorithm: Fifo },
-			{ description: 'Round Robin', algorithm: RoundRobin },
-			{ description: 'SJF', algorithm: SJF },
-		];
+		
 	},
 
 	generate: function(algorithm, options){

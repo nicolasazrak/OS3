@@ -39,6 +39,7 @@ var InputTable = React.createClass({
 							klt={klt}
 							useUlts={this.state.useUlts}
 							showAddULT={index === 0}
+							showULTAlgorithm={index === 1}
 						/> ;
 			})
 
@@ -54,7 +55,7 @@ var InputTable = React.createClass({
 
 	render: function(){
 		return (
-			<div className="row">
+			<div className="row sixteen wide column">
 				<form onSubmit={this.onSubmit}>
 					<table className="ui celled table input-table">
 						<thead>

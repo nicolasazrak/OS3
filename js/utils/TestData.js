@@ -1,7 +1,12 @@
+var AlgorithmsStore = require('../stores/AlgorithmsStore');
+
+var algorithms = AlgorithmsStore.getAlgorithms();
+
 var tasksWithUlts = [
 
 	{
 		id: 1,
+		algorithm: algorithms[0],
 		ULTs: [
 			{
 				id: 2,
@@ -30,6 +35,7 @@ var tasksWithUlts = [
 
 	{
 		id: 4,
+		algorithm: algorithms[0],
 		ULTs: [
 			{
 				id: 5,
@@ -72,6 +78,7 @@ var tasksWithUlts = [
 var tasksWithoutUlts = [
 	{
 		id: 1,
+		algorithm: algorithms[0],
 		ULTs: [
 			{
 				id: 2,
@@ -89,6 +96,7 @@ var tasksWithoutUlts = [
 
 	{
 		id: 3,
+		algorithm: algorithms[0],
 		ULTs: [
 			{
 				id: 4,

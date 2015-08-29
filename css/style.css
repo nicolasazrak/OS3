@@ -20,6 +20,9 @@
 	width: 180px !important;
 }
 
+.fix-box-sizing {
+	box-sizing: content-box;
+}
 
 .input-label {
 	font-weight: bolder;
@@ -31,14 +34,17 @@
 	padding-top: 1.9em;
 }
 
+.dropdown {
+	z-index: 100;
+}
 
 
 /* Results */
-
-div.result-table {
-    width: 960px;
+.table-results {
+	max-width: 906px;
     overflow-x: scroll;
-    margin-bottom: 5em;
+    margin-bottom: 10em;
+	border: 1px solid rgba(34,36,38,.1);
 }
 
 .table-results tbody td {

@@ -8,7 +8,7 @@ var InputHead = React.createClass({
 		var addUltColumn = this.props.useUlts ? <th></th> : null;
 
 		return (
-			<tr className="tr-input-head">
+			<tr className={"tr-input-head " + (this.props.useUlts ? '' : 'fix-box-sizing')}>
 				<th>Programa</th>
 				<th>Llegada</th>
 				<th>CPU</th>
