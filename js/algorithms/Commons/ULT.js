@@ -12,8 +12,6 @@ class ULT {
 			burst.left = burst.quantum;
 		});
 
-		this.hasEnded();
-
 	}
 
 	/* Deberia tener una estrategia para ver cual usar depende cual sea el algoritmo para los ults */

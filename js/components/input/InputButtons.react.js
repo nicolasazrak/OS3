@@ -29,9 +29,7 @@ var InputButtons = React.createClass({
 	},
 
 	onSelectedAlgorithm: function(algorithm){
-		return function(event){
-			this.setState({ selectedAlgorithm: algorithm });
-		}.bind(this);
+		this.setState({ selectedAlgorithm: algorithm });
 	},
 
 	render: function(){
