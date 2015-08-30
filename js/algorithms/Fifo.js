@@ -1,7 +1,7 @@
 'use strict';
 
 var Output		= require('./Commons/Output');
-var KLTModel	= require('./Commons/KLT');
+
 
 class FIFO {
 
@@ -15,7 +15,7 @@ class FIFO {
 	 * En FIFO o ROUND ROBBIN, siempre es el primero que este en la cola
 	 * En SJF, es el que necesita menos quantum
 	 * @param  {string} device Dispositivo a buscar
-	 * @return {KLT}        KLT que ejecutara
+	 * @return {KLT}
 	 */
 	chooseKLTFor(device){
 		/* Cuando SJF Herede cambia esto y es todo lo que hay que hacer */
@@ -30,7 +30,7 @@ class FIFO {
 	 * Podria usarse diferente quantum para cada dispositivo
 	 * @param  {string} resource
 	 * @param  {KLT} KLT
-	 * @return {integer}
+	 * @return {number}
 	 */
 	getQuantumFor(resource, KLT){
 		/* Para Round Robbin con reemplazar esto ya deberia andar */
@@ -39,7 +39,7 @@ class FIFO {
 
 	/**
 	 * Devuelve si en ese instante hay algo mas siendo ejecutado para cualquier dispositivo
-	 * @return {Boolean} [description]
+	 * @return {boolean}
 	 */
 	isAnythingBeingExecuted(){
 		for(var device in this.currentUsage){
