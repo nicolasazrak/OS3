@@ -8,7 +8,7 @@ describe('SJFTest', function () {
     //El test seria valido tanto para SJF (Se apropia) como para SRT (No se apropia)
     it("[Example] Test1", function () {
 
-        var SJF = new sjf({log: () => {}});
+        var SJF = new sjf();
 
         var newQueue = [
             {

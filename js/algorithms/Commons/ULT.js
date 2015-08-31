@@ -7,11 +7,13 @@ class ULT {
 		for(var key in data){
 			this[key] = data[key];
 		}
+		
+	}
 
+	beforeSchedule(){
 		this.bursts.forEach( burst => {
 			burst.left = burst.quantum;
 		});
-
 	}
 
 	/* Deberia tener una estrategia para ver cual usar depende cual sea el algoritmo para los ults */

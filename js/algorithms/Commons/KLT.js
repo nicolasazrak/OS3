@@ -1,6 +1,8 @@
 'use strict';
 
-var ULT = require('./ULT');
+var ULT 		= require('./ULT');
+var Fifo 		= require('../Fifo');
+var KLTOutput 	= require('./KLTOutputStrategy');
 
 class KLT {
 
@@ -11,6 +13,46 @@ class KLT {
 		}
 
 		this.ULTs = this.ULTs.map(ult => new ULT(ult));
+
+	}
+
+	beforeSchedule(){
+
+
+		//La forma mas fea de clonar objetos que existe
+		//Se usa porque los ULTs no son inmutables, entonces cuando planifico
+		//Se modifican y el burst left disminuye, cuando se planifica el klt
+		//ya va a estar finalizado
+		var scheduler = (this.algorithm !== undefined) ? new this.algorithm() : new Fifo();
+
+		//La idea de planificar aca los ULTs es saber en que orden se ejecutan
+		//Para poder darlos en orden en el metodo getNextResource
+		this.scheduled = scheduler.schedule(this.ULTs, {
+			ultMode: true,
+			quantum: {
+				cpu: 3
+			},
+			output: KLTOutput
+		})
+		/*.map(burst => {
+			for(var ult of this.ULTs){
+				if(ult.getId() === burst.id){
+					burst.ult = ult;
+					burst.left = burst.quantum;
+					return burst;
+				}
+			}
+		}.bind(this))*/
+		.map( burst => {
+			burst.left = burst.quantum;
+			return burst;
+		})
+		.sort( (burst1, burst2) => {
+			return burst1.start > burst2.start;
+		});
+
+		//Reiniciamos para que no quede nada de la planificacion anterior
+		this.ULTs.forEach(ult => ult.beforeSchedule());
 
 	}
 
@@ -57,6 +99,6 @@ class KLT {
 		return this.ULTs.every( ult => ult.hasEnded() );
 	}
 
-};
+}
 
 module.exports = KLT;

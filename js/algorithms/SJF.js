@@ -1,5 +1,4 @@
 'use strict';
-var Output = require('./Commons/Output');
 var FIFO = require('./Fifo');
 
 module.exports = class SJF extends FIFO {

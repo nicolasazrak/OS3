@@ -1,13 +1,9 @@
 'use strict';
 
-var Output		= require('./Commons/Output');
+var UIOutput = require('./Commons/UIOutputStrategy');
 
 
 class FIFO {
-
-	constructor(logger){
-		this.logger = logger || console;
-	}
 
 	static getDescription(){
 		return "Fifo";
@@ -107,7 +103,7 @@ class FIFO {
 		this.currentUsage[assignedResource.device] = { klt: KLT, ends: this.currentTime + givenQuantum };
 
 		/* Agrega a la salida que ese KLT se ejecuto en ese momento */
-		Output.addUsageToOutput({
+		this.outputStrategy.addUsageToOutput({
 			output: this.output,
 			id: id,
 			from: this.currentTime,
@@ -174,15 +170,20 @@ class FIFO {
 	 */
 	schedule(queue, options){
 
-		this.options = options || {};
+		this.options 		= options || {};
 
 		//Significa si se puede ejecutar cpu al mismo tiempo que io,
 		//Si es true, cada vez que se intente asignar un recurso hay que chequear que nadie mas este ejecutando nada
-		this.ultMode = this.options.ultMode || false;
-		this.output = Output.createInitialQueue(queue); //La salida estandar
-		this.currentTime = 0;  //El reloj que dice en que momento esta
-		this.currentUsage = {}; //Dice para cada dispositivo si se esta usando, quien y hasta cuando.
-		this.devicesQueue = {}; //Es la cola para cada dispositivo, tiene los que estan esperando por eso
+		this.ultMode 		= this.options.ultMode || false;
+		this.outputStrategy = this.options.output || UIOutput; //La salida estandar
+		this.output 		= this.outputStrategy.createInitialQueue(queue);
+		this.logger			= (this.options.verbose !== undefined && this.options.verbose === true) ? console : {log: () => {}};
+
+		this.currentTime 	= 0;  //El reloj que dice en que momento esta
+		this.currentUsage 	= {}; //Dice para cada dispositivo si se esta usando, quien y hasta cuando.
+		this.devicesQueue	= {}; //Es la cola para cada dispositivo, tiene los que estan esperando por eso
+
+		queue.forEach(thread => thread.beforeSchedule());
 
 		do {
 
@@ -212,12 +213,12 @@ class FIFO {
 			if(this.currentTime > 200){
 				/* Es para evitar los loops infinitos, no deberia estar */
 				console.error('Se corto por el loop infinito');
-				return Output.completeEmptys(this.output);
+				return this.outputStrategy.completeEmptys(this.output);
 			}
 
 		} while (queue.some(KLT => !KLT.hasEnded()));
 
-		return Output.completeEmptys(this.output);
+		return this.outputStrategy.completeEmptys(this.output);
 
 	}
 

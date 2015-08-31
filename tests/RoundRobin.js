@@ -7,7 +7,7 @@ describe('RoundRobinTest', function () {
 
     it("[Example] Test 1", function () {
 
-        var RoundRobin = new roundrobin({log: () => {}});
+        var RoundRobin = new roundrobin();
 
         var newQueue = [
             {
@@ -72,7 +72,7 @@ describe('RoundRobinTest', function () {
 
     it("[Example] Test 2", function () {
 
-        var RoundRobin = new roundrobin({log: () => {}});
+        var RoundRobin = new roundrobin();
 
         var newQueue = [
             {

@@ -6,7 +6,7 @@ describe('FifoTest', function () {
 
     it("[Example] Test 1", function () {
 
-        var Fifo = new fifo({log: () => {}});
+        var Fifo = new fifo();
 
         var newQueue = [
             {
