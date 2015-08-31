@@ -16,12 +16,12 @@ module.exports = {
 	/**
 	* @param {Object}
 	*/
-	addUsageToOutput: function(usage){
-		usage.output.push({
-			id: 		usage.id,
-			start: 		usage.from,
-			quantum: 	usage.quantum,
-			device: 	usage.device
+	addUsageToOutput: function(output, id, from, quantum, device){
+		output.push({
+			id: 		id,
+			start: 		from,
+			quantum: 	quantum,
+			device: 	device
 		});
 	},
 

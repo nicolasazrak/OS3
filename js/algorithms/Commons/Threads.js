@@ -68,20 +68,19 @@ class KLT {
 	}
 
 
-
-	/* Deberia tener una estrategia para ver cual usar depende cual sea el algoritmo para los ults */
-	/* Por ahora solamente voy a pensar el caso que tenga un 1 ULT */
+	/* Devuelve el proximo recurso que necesita */
 	getNextResource(){
 		var leftBursts = this.bursts.filter(b => b.left > 0);
 		if(leftBursts.length === 0)	return;
 		return leftBursts[0];
 	}
 
-	/** Es cuando el kernel le da el recurso que necesita
+	/**
+	* Es cuando el kernel le da el recurso que necesita
 	* Se lo descuenta de lo necesario
 	* @param {string} resource El dispositivo que se ejecuta
 	* @param {number} time por cuanto tiempo puede ejecutar
-	* @return {number} el ULT que lo ejecuto
+	* @return {number} el id del ULT que lo ejecuto
 	*/
 	giveResource(resource, time){
 
@@ -103,7 +102,7 @@ class KLT {
 	}
 
 	/**
-	* Devuelve si el proceso ya termino
+	* Devuelve si el thread ya termino
 	* Termino si todas sus rafagas ya se ejecutaron
 	* @return {boolean}
 	*/
@@ -117,6 +116,7 @@ class KLT {
 
 class ULT extends KLT {
 
+	/* Limpia el left de cada rafaga */
 	beforeSchedule(){
 		this.bursts.forEach( burst => {
 			burst.left = burst.quantum;
@@ -131,7 +131,6 @@ class ULT extends KLT {
 		return [this];
 	}
 
-	/* Devuelta, esto es para cuando hay mas de un ULT, todavia no esta hecho */
 	getStartTime(){
 		return this.start;
 	}
