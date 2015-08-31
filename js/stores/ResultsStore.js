@@ -15,10 +15,6 @@ var ResultsStore = Reflux.createStore({
 		Actions.confirmKLTs.listen(this.generate);
 	},
 
-	getAlgorithms: function(){
-		
-	},
-
 	generate: function(algorithm, options){
 		var scheduler = new algorithm();
 		var klts = TasksStore.getKLTs().map( klt => new KLT(klt) );

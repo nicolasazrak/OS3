@@ -4,6 +4,9 @@ var FIFO = require('./Fifo');
 
 module.exports = class SJF extends FIFO {
 
+	static getDescription(){
+		return "SJF";
+	}
 
 	/**
 	 * Devuelve cual es el proximo KLT para ejecutar el dispositivo

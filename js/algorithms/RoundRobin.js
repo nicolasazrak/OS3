@@ -4,6 +4,10 @@ var Fifo = require('./Fifo');
 
 module.exports = class RoundRobbin extends Fifo {
 
+	static getDescription(){
+		return "Round Robin";
+	}
+
 	getQuantumFor(resource, KLT){
 		/* Parece super confuso, pero lo que hace es para poder especificar cuanto es lo maximo que se ejecuta por dispositivo */
 		/* Ej aca en round robbin le pasamos que para la cpu puede ejecutar un maximo */

@@ -17,7 +17,7 @@ var InputButtons = React.createClass({
 	},
 
 	onGenerate: function (event) {
-		Actions.confirmKLTs(this.state.selectedAlgorithm.algorithm, {
+		Actions.confirmKLTs(this.state.selectedAlgorithm, {
 			quantum: {
 				cpu: parseInt(React.findDOMNode(this.refs.cpuQuantumValue).value) || 3
 			}

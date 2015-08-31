@@ -9,6 +9,9 @@ class FIFO {
 		this.logger = logger || console;
 	}
 
+	static getDescription(){
+		return "Fifo";
+	}
 
 	/**
 	 * Devuelve cual es el proximo KLT para ejecutar el dispositivo
