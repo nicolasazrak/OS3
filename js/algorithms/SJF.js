@@ -18,7 +18,7 @@ module.exports = class SJF extends FIFO {
 
 		var sorted = this.devicesQueue[device]
 			.filter(thread => thread.getNextResource() !== undefined)
-			.sort((thread1, thread2) => thread1.getNextResource().left > thread2.getNextResource().left);
+			.sort((thread1, thread2) => thread1.getNextResource().left - thread2.getNextResource().left);
 
 		if(sorted.length > 0){
 			for(var i in this.devicesQueue[device]){

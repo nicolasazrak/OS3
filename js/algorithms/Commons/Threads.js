@@ -41,7 +41,7 @@ class KLT {
 			return burst;
 		})
 		.sort( (burst1, burst2) => {
-			return burst1.start > burst2.start;
+			return burst1.start - burst2.start;
 		});
 
 		//Reiniciamos para que no quede nada de la planificacion anterior
