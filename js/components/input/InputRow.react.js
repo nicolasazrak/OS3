@@ -1,11 +1,10 @@
-var React = require('react');
-
-var Actions = require('../../actions/Actions');
-var InputField = require('./InputField.react');
-var TasksStore 		= require('../../stores/TasksStore');
+var React 				= require('react');
+var Actions 			= require('../../actions/Actions');
+var InputField 			= require('./InputField.react');
+var TasksStore 			= require('../../stores/TasksStore');
+var AlgorithmChooser	= require('./AlgorithmChooser');
 
 var InputRow = React.createClass({
-
 
 	/* TODO use react/addons */
 	onChangeTitle: function(event){
@@ -54,23 +53,21 @@ var InputRow = React.createClass({
 		Actions.addULT(this.props.klt);
 	},
 
-	/* El boton solamente es visible para el primer ult del klt */
-	getAddULTButtonStyle: function(){
-		return {
-			display: this.props.showAddULT ? '' : 'none'
-		};
+	onUpdatedULTAlgorithm: function(algorithm){
+		Actions.updatedULTAlgorithm(this.props.klt, algorithm);
 	},
 
 	render: function(){
 
 		var ultColumn;
 		if(this.props.useUlts){
-			ultColumn = (<td>
-				<a className="ui olive button" style={this.getAddULTButtonStyle()} onClick={this.onAddULT}>Agregar ULT</a>
-			</td>);
+			ultColumn = (
+				<td>
+					<a className="ui olive button" style={{'display': this.props.showAddULT ? '' : 'none'}} onClick={this.onAddULT}>Agregar ULT</a>
+					{this.props.showULTAlgorithm ? <AlgorithmChooser fluid={true} onSelect={this.onUpdatedULTAlgorithm} selected={this.props.klt.algorithm}  /> : null}
+				</td>
+			);
 		}
-
-		var deleteUltDescription = this.props.useUlts ? 'ULT': '';
 
 		return (
 			<tr className="tr-input-row">
@@ -82,7 +79,7 @@ var InputRow = React.createClass({
 				<InputField type="number" placeholder="CPU"  value={this.props.ult.bursts[2].quantum}       onChange={this.onChangeCpuQuantum2}    />
 				<InputField type="number" placeholder="I/O"  value={this.props.ult.bursts[3].quantum}       onChange={this.onChangeIOQuantum2}    />
 				<td>
-					<a className="ui red button" onClick={this.onDeleteULT}>Eliminar {deleteUltDescription}</a>
+					<a className="ui red button" onClick={this.onDeleteULT}>{'Eliminar ' + (this.props.useUlts ? 'ULT': '')}</a>
 				</td>
 				{ultColumn}
 

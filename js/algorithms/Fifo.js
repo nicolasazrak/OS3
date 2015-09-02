@@ -1,45 +1,43 @@
 'use strict';
 
-var Output		= require('./Commons/Output');
-var KLTModel	= require('./Commons/KLT');
+var UIOutput = require('./Commons/UIOutputStrategy');
+
 
 class FIFO {
 
-	constructor(logger){
-		this.logger = logger || console;
+	static getDescription(){
+		return "Fifo";
 	}
 
-
 	/**
-	 * Devuelve cual es el proximo KLT para ejecutar el dispositivo
+	 * Devuelve cual es el proximo thread para ejecutar el dispositivo
 	 * En FIFO o ROUND ROBBIN, siempre es el primero que este en la cola
 	 * En SJF, es el que necesita menos quantum
 	 * @param  {string} device Dispositivo a buscar
-	 * @return {KLT}        KLT que ejecutara
+	 * @return {KLT|ULT}
 	 */
-	chooseKLTFor(device){
+	chooseNextFor(device){
 		/* Cuando SJF Herede cambia esto y es todo lo que hay que hacer */
 		/* En fifo simplemente sacamos al primero de la lista */
 		return this.devicesQueue[device].shift();
 	}
 
 	/**
-	 * Devuelve la cantidad de quantum que se le va a asignar al KLT
+	 * Devuelve la cantidad de quantum que se le va a asignar al thread
 	 * En FIFO, se le asigna todo el quantum necesario
 	 * En ROUND ROBBIN, se le asigna el quantum predefinido por el SO
 	 * Podria usarse diferente quantum para cada dispositivo
 	 * @param  {string} resource
-	 * @param  {KLT} KLT
-	 * @return {integer}
+	 * @return {number}
 	 */
-	getQuantumFor(resource, KLT){
+	getQuantumFor(resource){
 		/* Para Round Robbin con reemplazar esto ya deberia andar */
 		return resource.quantum;
 	}
 
 	/**
 	 * Devuelve si en ese instante hay algo mas siendo ejecutado para cualquier dispositivo
-	 * @return {Boolean} [description]
+	 * @return {boolean}
 	 */
 	isAnythingBeingExecuted(){
 		for(var device in this.currentUsage){
@@ -59,7 +57,7 @@ class FIFO {
 		this.logger.log('---> Asignando: ', device);
 
 		if(this.currentUsage[device] !== undefined){
-			this.logger.log('\t El dispositivo ' + device + ' se encuentra ocupado por: ', this.currentUsage[device].klt.getId());
+			this.logger.log('\t El dispositivo ' + device + ' se encuentra ocupado por: ', this.currentUsage[device].thread.getId());
 			return;
 		}
 
@@ -72,8 +70,8 @@ class FIFO {
 			if(!this.ultMode || !this.isAnythingBeingExecuted()){
 
 				/* Saca el proximo dispositivo de la cola y le asigna el recurso */
-				var KLT = this.chooseKLTFor(device);
-				this.assignResourceTo(KLT, device);
+				var thread = this.chooseNextFor(device);
+				this.assignResourceTo(thread, device);
 
 			}else{
 				this.logger.log('\t El dispotivo esta libre pero ya hay alguien mas ejecutando, esperando...');
@@ -88,34 +86,29 @@ class FIFO {
 
 	/**
 	 * Le asigna el recurso
-	 * @param  {KLT} KLT    Klt al que se le va a aginar el recurso
+	 * @param  {KLT|ULT} thread al que se le va a aginar el recurso
 	 * @param  {string} device Dispositivo que se va a usar
 	 */
-	assignResourceTo(KLT, device){
+	assignResourceTo(thread, device){
 
-		var assignedResource = KLT.getNextResource();
+		var assignedResource = thread.getNextResource();
 
-		/* Entonces se le da el recurso a ese KLT */
-		var givenQuantum = this.getQuantumFor(assignedResource, KLT);
-		var id = KLT.giveResource(device, givenQuantum);
+		/* Entonces se le da el recurso a ese thread */
+		var givenQuantum = this.getQuantumFor(assignedResource, thread);
+		var id = thread.giveResource(device, givenQuantum);
 
-		this.logger.log('\t Asignado por ' + givenQuantum + ' quantums a: ', KLT);
+		this.logger.log('\t Asignado por ' + givenQuantum + ' quantums a: ', thread);
+
 		/* Le asina el recurso por el tiempo que lo necesite (en FIFO todo el quantum) */
-		this.currentUsage[assignedResource.device] = { klt: KLT, ends: this.currentTime + givenQuantum };
+		this.currentUsage[assignedResource.device] = { thread: thread, ends: this.currentTime + givenQuantum };
 
-		/* Agrega a la salida que ese KLT se ejecuto en ese momento */
-		Output.addUsageToOutput({
-			output: this.output,
-			id: id,
-			from: this.currentTime,
-			quantum: givenQuantum,
-			device: device
-		});
+		/* Agrega a la salida que ese thread se ejecuto en ese momento */
+		this.outputStrategy.addUsageToOutput(this.output, id, this.currentTime, givenQuantum, device);
 
 	}
 
 	/**
-	 * Verifica si el dispositivo se libero, en caso uqe se libere, saca el KLT y chequeea su proxio requerimiento
+	 * Verifica si el dispositivo se libero, en caso uqe se libere, saca el thread y chequeea su proxio requerimiento
 	 * @param  {string} device Dispositivo a chequear, ej: CPU/IO
 	 */
 	checkDeviceQueue(device){
@@ -130,8 +123,8 @@ class FIFO {
 
 				//TODO refactorizar esto, no me gusta el efecto, es confuso por el nombre
 
-				/* Hay que agregar a la nueva cola lo proximo que use el KLT */
-				this.checkKLTNextRequirement(previousUsage.klt);
+				/* Hay que agregar a la nueva cola lo proximo que use el thread */
+				this.checkNextRequirement(previousUsage.thread);
 			}
 
 			delete this.currentUsage[device];
@@ -141,23 +134,23 @@ class FIFO {
 	}
 
 	/**
-	 * Verifica cual es la proxima rafaga que va a usar el KLT y lo agrega a la cola de ese dispotivo
-	 * @param  {KLT} KLT
+	 * Verifica cual es la proxima rafaga que va a usar el thread y lo agrega a la cola de ese dispotivo
+	 * @param  {KLT|ULT}
 	 */
-	checkKLTNextRequirement(KLT){
+	checkNextRequirement(thread){
 
-		var resource = KLT.getNextResource();
+		var resource = thread.getNextResource();
 		if(resource === undefined) return;
 
-		this.logger.log('El KLT id ' + KLT.getId() + ' necesita: ', resource);
+		this.logger.log('El thread id ' + thread.getId() + ' necesita: ', resource);
 
 		/* Crea la cola para el dispositivo */
 		if(!this.devicesQueue.hasOwnProperty(resource.device)){
 			this.devicesQueue[resource.device] = [];
 		}
 
-		/* Agrega el KLT a la cola del recurso que necesita */
-		this.devicesQueue[resource.device].push(KLT);
+		/* Agrega el thread a la cola del recurso que necesita */
+		this.devicesQueue[resource.device].push(thread);
 
 		this.logger.log('La cola de ' + resource.device + ' ahora es: ', this.devicesQueue);
 
@@ -167,19 +160,24 @@ class FIFO {
 	 * Planifica las tareas dadas
 	 * @param  {Array} queue tareas a planificar
 	 * @param  {object} options
-	 * @return {Array}       tareas planificadas
+	 * @return {Array} tareas planificadas en el formato especificado por options.output
 	 */
 	schedule(queue, options){
 
-		this.options = options || {};
+		this.options 		= options || {};
 
 		//Significa si se puede ejecutar cpu al mismo tiempo que io,
 		//Si es true, cada vez que se intente asignar un recurso hay que chequear que nadie mas este ejecutando nada
-		this.ultMode = this.options.ultMode || false;
-		this.output = Output.createInitialQueue(queue); //La salida estandar
-		this.currentTime = 0;  //El reloj que dice en que momento esta
-		this.currentUsage = {}; //Dice para cada dispositivo si se esta usando, quien y hasta cuando.
-		this.devicesQueue = {}; //Es la cola para cada dispositivo, tiene los que estan esperando por eso
+		this.ultMode 		= this.options.ultMode || false;
+		this.outputStrategy = this.options.output || UIOutput; //La salida estandar
+		this.output 		= this.outputStrategy.createInitialQueue(queue);
+		this.logger			= (this.options.verbose !== undefined && this.options.verbose === true) ? console : {log: () => {}};
+
+		this.currentTime 	= 0;  //El reloj que dice en que momento esta
+		this.currentUsage 	= {}; //Dice para cada dispositivo si se esta usando, quien y hasta cuando.
+		this.devicesQueue	= {}; //Es la cola para cada dispositivo, tiene los que estan esperando por eso
+
+		queue.forEach(thread => thread.beforeSchedule());
 
 		do {
 
@@ -191,12 +189,12 @@ class FIFO {
 				this.checkDeviceQueue(device);
 			}
 
-			var newQueue = queue.filter(KLT => this.currentTime == KLT.getStartTime());
+			var newQueue = queue.filter(thread => this.currentTime == thread.getStartTime());
 			this.logger.log('Llegaron los procesos: ', newQueue.map(k => k.getId()));
 
 			/* Procesamos los nuevos threads */
 			/* Y verificamos que es lo que necesita */
-			newQueue.forEach(this.checkKLTNextRequirement, this);
+			newQueue.forEach(this.checkNextRequirement, this);
 
 			/* Revisa cada dispositivo a ver si alguno se libero para agregarlo a la cola */
 			for(var device2 in this.devicesQueue){
@@ -209,12 +207,12 @@ class FIFO {
 			if(this.currentTime > 200){
 				/* Es para evitar los loops infinitos, no deberia estar */
 				console.error('Se corto por el loop infinito');
-				return Output.completeEmptys(this.output);
+				return this.outputStrategy.completeEmptys(this.output);
 			}
 
-		} while (queue.some(KLT => !KLT.hasEnded()));
+		} while (queue.some(thread => !thread.hasEnded()));
 
-		return Output.completeEmptys(this.output);
+		return this.outputStrategy.completeEmptys(this.output);
 
 	}
 

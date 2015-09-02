@@ -35,18 +35,18 @@ module.exports = {
 
 
 	/**
-	* Le agrega el uso de un dispositivo a la cola a un ult recibe params con los valores
+	* Le agrega el uso de un dispositivo a la cola a un thread recibe params con los valores
 	* @param {Array} el array del estilo creado por createInitialQueue
-	* @param {number} id el klt a matchear
-	* @param {number} from tiempo desde el que thread usa el dispositivo
-	* @param {number} duration la cantidad de tiempo que el thread usa el dispositivo
+	* @param {number} id del thread que ejecuta
+	* @param {number} from tiempo desde que el thread usa el dispositivo
+	* @param {number} quantum la cantidad de tiempo que el thread usa el dispositivo
 	* @param {string} el dispositivo a usar, ej: cpu, io, ...
 	*/
-	addUsageToOutput: function(usage){
-		usage.output.forEach(function(ult){
-			if(ult.id === usage.id){
-				for(var i = 0; i < usage.quantum; i++){
-					ult.result[usage.from + i] = usage.device;
+	addUsageToOutput: function(output, id, from, quantum, device){
+		output.forEach(function(thread){
+			if(thread.id === id){
+				for(var i = 0; i < quantum; i++){
+					thread.result[from + i] = device;
 				}
 			}
 		});

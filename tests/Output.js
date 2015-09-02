@@ -1,7 +1,7 @@
-var should  = require('should');
-var KLT     = require('../js/algorithms/Commons/KLT');
-var ULT     = require('../js/algorithms/Commons/ULT');
-var Output 	= require('../js/algorithms/Commons/Output');
+var should      = require('should');
+var KLT         = require('../js/algorithms/Commons/KLT');
+var ULT         = require('../js/algorithms/Commons/ULT');
+var UIOutput 	= require('../js/algorithms/Commons/UIOutputStrategy');
 
 
 describe('Common Output', function () {
@@ -46,7 +46,7 @@ describe('Common Output', function () {
         ];
 
 
-		Output.createInitialQueue(newQueue).should.be.eql(
+		UIOutput.createInitialQueue(newQueue).should.be.eql(
 			[
 				{
 					id: 2,
@@ -94,7 +94,7 @@ describe('Common Output', function () {
             )
         ];
 
-		Output.createInitialQueue(ults).should.be.eql(
+		UIOutput.createInitialQueue(ults).should.be.eql(
 			[
 				{
 					id: 2,

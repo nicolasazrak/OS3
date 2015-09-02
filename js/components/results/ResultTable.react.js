@@ -37,8 +37,8 @@ var ResultTable = React.createClass({
 
 	render: function(){
 		return (
-			<div className="result-table">
-				<table className="ui celled table table-results">
+			<div className="table-results">
+				<table className="ui celled table">
 					<thead>
 						<ResultHead max_quantum_count={this.getMaxQuantumCount()} />
 					</thead>

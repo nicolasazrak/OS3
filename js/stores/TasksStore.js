@@ -1,6 +1,8 @@
-var Reflux 		= require('reflux');
-var Actions		= require('../actions/Actions');
-var TestData 	= require('../utils/TestData');
+var Reflux 			= require('reflux');
+var Actions			= require('../actions/Actions');
+var TestData 		= require('../utils/TestData');
+var ResultsStore	= require('./ResultsStore');
+var algorithmsStore = require('./AlgorithmsStore');
 
 var __klts = TestData.tasksWithoutUlts;
 
@@ -11,16 +13,18 @@ var TasksStore = Reflux.createStore({
 
 	init: function(){
 		//Listen to actions
-		Actions.addKLT		.listen(this.addKLT);
-		Actions.updateULT	.listen(this.updateULT);
-		Actions.addULT		.listen(this.addULT);
-		Actions.deleteULT	.listen(this.deleteULT);
+		Actions.addKLT				.listen(this.addKLT);
+		Actions.updateULT			.listen(this.updateULT);
+		Actions.addULT				.listen(this.addULT);
+		Actions.deleteULT			.listen(this.deleteULT);
+		Actions.updatedULTAlgorithm	.listen(this.updatedULTAlgorithm);
 	},
 
 	addKLT: function(){
 		var id = idCounter++ ;
 		var newKLT = {
 			id: id,
+			algorithm: algorithmsStore.getAlgorithms()[0],
 			ULTs: []
 		};
 		this.addULT(newKLT);
@@ -57,6 +61,11 @@ var TasksStore = Reflux.createStore({
 
 	deleteKLT: function(klt){
 		__klts.splice(__klts.indexOf(klt), 1);
+	},
+
+	updatedULTAlgorithm: function(klt, algorithm){
+		klt.algorithm = algorithm;
+		this.trigger();
 	},
 
 	setTasks: function(klts){

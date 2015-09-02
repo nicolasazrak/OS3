@@ -7,7 +7,7 @@ describe('RoundRobinTest', function () {
 
     it("[Example] Test 1", function () {
 
-        var RoundRobin = new roundrobin({log: () => {}});
+        var RoundRobin = new roundrobin();
 
         var newQueue = [
             {
@@ -69,4 +69,89 @@ describe('RoundRobinTest', function () {
 
 
     });
+
+    it("[Example] Test 2", function () {
+
+        var RoundRobin = new roundrobin();
+
+        var newQueue = [
+            {
+                id: 1,
+                ultCounter: 2,
+                ULTs: [
+                    {
+                        id: 1,
+                        description: 'KLT 1/ULT 1',
+                        start: 1,
+                        bursts: [
+                            { device: 'cpu', quantum: 2 },
+                            { device: 'scanner',  quantum: 2 },
+                            { device: 'cpu', quantum: 4 }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 2,
+                ultCounter: 3,
+                ULTs: [
+                    {
+                        id: 2,
+                        description: 'KLT 2/ULT 1',
+                        start: 0,
+                        bursts: [
+                            { device: 'cpu', quantum: 4 },
+                            { device: 'printer',  quantum: 2 },
+                            { device: 'cpu', quantum: 3 }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 3,
+                ultCounter: 3,
+                ULTs: [
+                    {
+                        id: 3,
+                        description: 'KLT 3/ULT 1',
+                        start: 0,
+                        bursts: [
+                            { device: 'cpu', quantum: 1 },
+                            { device: 'printer',  quantum: 3 },
+                            { device: 'cpu', quantum: 3 }
+                        ]
+                    }
+                ]
+            },
+        ];
+
+        var result =  [
+            {
+                id: 1,
+                description: 'KLT 1/ULT 1',
+                result: [null, null, null, null, 'cpu', 'cpu', 'scanner', 'scanner', null, null, 'cpu', 'cpu', 'cpu', null, null, null, 'cpu']
+            },
+            {
+                id: 2,
+                description: 'KLT 2/ULT 1',
+                result: ['cpu', 'cpu', 'cpu', null, null, null, 'cpu', 'printer', 'printer', null, null, null, null, 'cpu', 'cpu', 'cpu', null]
+            },
+            {
+                id: 3,
+                description: 'KLT 3/ULT 1',
+                result: [null, null, null, 'cpu', 'printer', 'printer', 'printer', 'cpu', 'cpu', 'cpu', null, null, null, null, null, null, null]
+            }
+        ];
+
+        newQueue = newQueue.map( klt => new KLT(klt) );
+
+        RoundRobin.schedule(newQueue, {
+            quantum: {
+                cpu: 3
+            }
+        }).should.be.eql(result);
+
+
+    });
+
 });
